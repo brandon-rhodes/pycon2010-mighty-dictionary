@@ -3,3 +3,4 @@ div.slide { padding: 3em 4% 4%; }
 div.slide { text-align: center; font-family: "URW Bookman L"; }
 div.slide table { margin-left: auto; margin-right: auto; }
 .literal { font-family: Inconsolata; }
+pre.literal-block, pre.doctest-block { text-align: left; font-size: 0.8em; }

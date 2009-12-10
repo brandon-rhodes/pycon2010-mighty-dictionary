@@ -215,8 +215,10 @@ A dictionary in action
 A dictionary in action
 ======================
 
-Try adding all of the values
-from the table we created earlier::
+| Try adding all of the values
+| from the table we created earlier
+
+::
 
  hash('Brandon')  ->  10010101000101001000111010001111
  hash('Brendon')  ->  11110100001111000000101010100011
@@ -224,6 +226,139 @@ from the table we created earlier::
  hash(3.141)      ->  11011110100100110100001110101100
  hash(3.1415)     ->  01101010101011010000100100000010
  hash((2, 7, 0))  ->  11101100010001110111111111111010
+
+A Question of Space
+===================
+
+| What happened?
+
+.. class:: incremental
+
+| Why did the dictionary
+| expand to 32 slots on the 6th insert
+| rather than waiting until it was full?
+
+.. class:: incremental
+
+| A: To make gambling safer.
+
+The Gamble
+==========
+
+| The dictionary is based on a gamble.
+
+.. class:: incremental
+
+| The above example worked so well
+| because the last three digits of the hashes
+| *happened* to be distinct
+
+.. class:: incremental
+
+| What if they were not?
+
+The Gamble
+==========
+
+| What if we try adding these keys to a dict?
+
+::
+
+ 'The' 'sassy' 'Dane' 'pranced' 'showily'
+
+.. class:: incremental
+
+| When a key arrives whose slot is already taken,
+| the dictionary has experienced a *collision*
+
+Collisions
+==========
+
+| Only the first key with a given hash value
+| gets to live in that slot
+
+.. class:: incremental
+
+| Every subsequent key gets placed in another slot
+
+.. class:: incremental
+
+| When you look up one of the later keys,
+| the dictionary has to look through every
+| previous key involved in the collision
+| before it finds the one you want
+
+Iteration
+=========
+
+| When you iterate over a dictionary,
+| it steps in order through its hash table
+
+Iteration
+=========
+
+| **Consequence #1.** Triggering a dictionary resize
+| can change the order of existing elements
+
+ >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
+ >>> d.keys()
+ ['toil', 'Double', 'and', 'trouble', 'double']
+ >>> d['fire'] = 6
+ >>> d.keys()
+ ['and', 'fire', 'Double', 'double', 'toil', 'trouble']
+
+Iteration
+=========
+
+| **Consequence #2.** The dictionary could lose its place
+| an add or remove caused a resize during iteration, so it
+| refuses the change with a ``RuntimeError``
+
+ >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
+ >>> for key in d:
+ ...     d['fire'] = 6
+ ... 
+ Traceback (most recent call last):
+   File "<stdin>", line 1, in <module>
+ RuntimeError: dictionary changed size during iteration
+
+Iteration
+=========
+
+| **Consequence #3.** Because collisions move keys
+| away from their natural hash values, key order
+| is sensitive to dictionary history
+
+ >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
+ >>> d.keys()
+ ['toil', 'Double', 'and', 'trouble', 'double']
+ >>> e = {'Double': 1, 'double': 2, 'and': 4, 'toil': 3, 'trouble': 5}
+ >>> e.keys()
+ ['and', 'Double', 'trouble', 'toil', 'double']
+ >>> d == e
+ True
+
+Iteration
+=========
+
+| **Consequence #4.** If a dictionary has
+| been recently resized, its key order will
+| have been reordered even if it is now equal
+
+ >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
+ >>> e = dict(d)
+ >>> e['fire'] = 6
+ >>> del e['fire']
+ >>> d.keys()
+ ['toil', 'Double', 'and', 'trouble', 'double']
+ >>> e.keys()
+ ['and', 'Double', 'double', 'toil', 'trouble']
+
+Iteration
+=========
+
+| *Ergo:* a dictionary cannot guarantee the order
+| in which you encounter its keys when iterating
 
 Further
 =======
