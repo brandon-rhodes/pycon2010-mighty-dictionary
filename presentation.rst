@@ -12,14 +12,17 @@ The Python List
 
 | Stores objects under integer indexes
 
-.. image:: figures/list1.png
+.. .. image:: figures/list1.png
+
+| ``[0]   [1]   [2]   [3]   [4]``
+| ``'Jan' 'Feb' 'Mar' 'Apr' 'May'``
 
 The Python List
 ===============
 
 | Stores objects under integer indexes
-| Assignment to *n* is quick
-| Retrieval from *n* is quick
+| Assignment to ``[`` *n* ``]`` is quick
+| Retrieval from ``[`` *n* ``]`` is quick
 
 How?
 ====
@@ -85,7 +88,7 @@ A: Hash functions
 | So a dictionary can accept
 | complicated *keys* as index values
 | but turn around and secretly store them
-| in an *integer-indexed* list
+| in an *integer-indexed* “hash table”
 
 A: Hash functions
 =================
@@ -234,9 +237,24 @@ A Question of Space
 
 .. class:: incremental
 
-| Why did the dictionary
-| expand to 32 slots on the 6th insert
-| rather than waiting until it was full?
+| The dictionary *resized* its internal hash table
+| from 8 entries (3 bits) to 32 entries (5 bits).
+
+A Question of Space
+===================
+
+| The rules:
+
+.. class:: incremental
+
+| When dictionary exceeds 5 elements, size ×4
+| When dictionary exceeds ⅔ full, size ×4
+| When len > 50k entries, factor is ×2
+
+A Question of Space
+===================
+
+| Q: Why allow so much extra space?
 
 .. class:: incremental
 
@@ -262,9 +280,7 @@ The Gamble
 
 | What if we try adding these keys to a dict?
 
-::
-
- 'The' 'sassy' 'Dane' 'pranced' 'showily'
+| ``'The' 'sassy' 'Dane' 'pranced' 'showily'``
 
 .. class:: incremental
 
@@ -287,6 +303,31 @@ Collisions
 | the dictionary has to look through every
 | previous key involved in the collision
 | before it finds the one you want
+
+Collisions
+==========
+
+| When a hash table is given *more*
+| space in which to hold *n* items,
+
+.. class:: incremental
+
+| collisions are *fewer,*
+
+.. class:: incremental
+
+| inserts happen *faster,*
+
+.. class:: incremental
+
+| and lookups cost *less*.
+
+The Gamble
+==========
+
+| So *the gamble* is that by taking extra room
+| the dictionary will provide you with nearly
+| instantaneous results.
 
 Iteration
 =========
@@ -360,42 +401,114 @@ Iteration
 | *Ergo:* a dictionary cannot guarantee the order
 | in which you encounter its keys when iterating
 
-Further
-=======
+Small dictionaries
+==================
 
-When does it expand?
-When does it contract?
+| If you keep thousands of small dictionaries,
+| the wasted space can become significant
 
+Small dictionaries
+==================
 
-so a dictionary makes a small list
-and uses the last few digits of the hash as the index
-so you get instant access of a list
-with only the added expense of computing the hash
+| Instead, try using a tuple with index constants
+| or, in Python 2.6, a namedtuple
 
-starts with 8 slots uses 3 bits
-then expands to 32 and uses 5 bits
+::
 
-issue: wasted space
+ >>> mytuple = ('Brandon', 35)
+ >>> print mytuple[NAME], 'is', mytuple[AGE]
+ Brandon is 35
 
-issue: cost of expanding the dictionary
+Objects and their dicts
+=======================
 
-issue: collisions
+| Normal objects have a ``__dict__`` dictionary
+| in which their instance attributes are stored
 
-dictionaries are behind every normal object; hence __slots__
+.. class:: incremental
 
-Lesson #1: Dictionaries consume space
+| To avoid the overhead of using a dictionary,
+| you can specify ``__slots__`` for your class
 
-   not *that* much space as a fraction of the objs stored
-   BUT if you are storing same objects over and over it's a problem
+Hashing your own classes
+========================
 
-lesson: how your own hash functions should behave
+| Normally, each instance of a user class
+| is given a unique hash value, so that no
+| two instances will look like the same key
 
-   you should twiddle lower-end bits first
+::
 
+ >>> class C(object): pass
+ ... 
+ >>> c1 = C()
+ >>> c2 = C()
+ >>> d = {c1: 1, c2: 2}
 
+Hashing your own classes
+========================
+
+| But what if your class instances represent *values*
+| that could be equal to one another?
+
+.. class:: incremental
+
+| Then equal values will deserve
+| to be treated as the same key!
+
+Hashing your own classes
+========================
+
+| Think of the two steps
+| that a dictionary must take
+| with each object offered as a key
+
+Hashing your own classes
+========================
+
+| **First,** give your class a ``__hash__()`` method
+| that returns a reasonable integer hash
+
+.. class:: incremental
+
+| **Second,** give your class an ``__eq__()`` method
+| with which the dictionary
+
+Hashing your own classes
+========================
+
+::
+
+ class Point(object):
+     def __init__(self, x, y):
+         self.x, self.y = x, y
+
+     def __eq__(self, p):
+         return self.x == p.x and self.y == p.y
+
+     def __hash__(self):
+         return hash(self.x) ^ hash(self.y)
 
 The End
 =======
+
+Other material
+==============
+
+When does it contract?
+
+How much time does malloc take?  Both on going bigger and smaller!
+
+How much time does it take to look up collided objects?
+
+Measure wasted space!
+ - Normally
+ - When it contracts to very small
+
+
+import my_inspect
+d = {1:1, 2:2, 3:3, 4:4, 5:5, 6:6}
+my_inspect.display_dictionary(d)
 
 .. raw:: html
 
