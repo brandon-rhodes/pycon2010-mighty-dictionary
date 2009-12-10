@@ -119,31 +119,31 @@ A: Hash functions
 
 ::
 
- >>> hash('Brandon')
- -1793814897
+ >>> hash('PyCon or Bust')
+ 2091597697
 
 .. class:: incremental
 
 ::
 
- >>> bin(-1793814897)
- '-0b1101010111010110111000101110001'
+ >>> bin(2091597697)
+ '0b1111100101010110011111110000001'
 
 A: Hash functions
 =================
 
-``hash('Brandon')  ->  11101010111010110111000101110001``
+``hash('Brandon')  ->  10010101000101001000111010001111``
 
 .. class:: incremental
 
-``hash('Brendon')  ->  10001011110000111111010101011101``
+``hash('Brendon')  ->  11110100001111000000101010100011``
 
 A: Hash functions
 =================
 
-``hash('Brandon')  ->  .11....0..1.1...0....0....1.00..``
+``hash('Brandon')  ->  .00....1..0.0...1....1....0.11..``
 
-``hash('Brendon')  ->  .00....1..0.0...1....1....0.11..``
+``hash('Brendon')  ->  .11....0..1.1...0....0....1.00..``
 
 | Notice how a one-letter difference
 | gets scattered across the hash digits!
@@ -151,74 +151,85 @@ A: Hash functions
 A: Hash functions
 =================
 
-``hash('Brandon')  ->  11101010111010110111000101110001``
+``hash('Brandon')  ->  10010101000101001000111010001111``
 
-``hash('Brendon')  ->  10001011110000111111010101011101``
-
-.. class:: incremental
-
-``hash('Brando')   ->  01111111011101000001011000100100``
+``hash('Brendon')  ->  11110100001111000000101010100011``
 
 .. class:: incremental
 
-``hash(3.14)       ->  11000100011110011110000010111001``
+``hash('Brandoni') ->  10101011000110000101110111111001``
 
 .. class:: incremental
 
-``hash(3.141)      ->  11001111101101010100010110010010``
+``hash(3.141)      ->  11011110100100110100001110101100``
+
+.. class:: incremental
+
+``hash(3.1415)     ->  01101010101011010000100100000010``
 
 A: Hash functions
 =================
 
-``hash('Brandon')  ->  11101010111010110111000101110001``
+``hash('Brandon')  ->  10010101000101001000111010001111``
 
-``hash('Brendon')  ->  10001011110000111111010101011101``
+``hash('Brendon')  ->  11110100001111000000101010100011``
 
-``hash('Brando')   ->  01111111011101000001011000100100``
+``hash('Brandoni') ->  10101011000110000101110111111001``
 
-``hash(3.14)       ->  ....0.0001..10..1.1..0.0..1.1.01``
+``hash(3.141)      ->  1.01.1....01001..1..0.1.1.1.110.``
 
-``hash(3.141)      ->  ....1.1110..01..0.0..1.1..0.0.10``
+``hash(3.1415)     ->  0.10.0....10110..0..1.0.0.0.001.``
 
 A: Hash functions
 =================
 
-``hash('Brandon')  ->  11101010111010110111000101110001``
+``hash('Brandon')  ->  10010101000101001000111010001111``
 
-``hash('Brendon')  ->  10001011110000111111010101011101``
+``hash('Brendon')  ->  11110100001111000000101010100011``
 
-``hash('Brando')   ->  01111111011101000001011000100100``
+``hash('Brandoni') ->  10101011000110000101110111111001``
 
-``hash(3.14)       ->  11000100011110011110000010111001``
+``hash(3.141)      ->  11011110100100110100001110101100``
 
-``hash(3.141)      ->  11001111101101010100010110010010``
+``hash(3.1415)     ->  01101010101011010000100100000010``
 
 .. class:: incremental
 
-``hash((2, 7, 0))  ->  10010011101110001000000000000110``
+``hash((2, 7, 0))  ->  11101100010001110111111111111010``
+
+A dictionary in action
+======================
+
+| Behind a new, empty dictionary
+| is a list with eight slots
+
+.. class:: incremental
+
+| Why eight?
+
+.. class:: incremental
+
+| Because if you grab the last **3 digits**
+| off the end of a hash you get **8 combinations**
+
+A dictionary in action
+======================
+
+Try adding all of the values
+from the table we created earlier::
+
+ hash('Brandon')  ->  10010101000101001000111010001111
+ hash('Brendon')  ->  11110100001111000000101010100011
+ hash('Brandoni') ->  10101011000110000101110111111001
+ hash(3.141)      ->  11011110100100110100001110101100
+ hash(3.1415)     ->  01101010101011010000100100000010
+ hash((2, 7, 0))  ->  11101100010001110111111111111010
 
 Further
 =======
 
-So how does dict do it?
-
-With the same trick as a list: contig area of memory.
-
-But the keys are not integers!
-
-Issue #1 how turn keys into integers
-
-A: slot machine
-
-a slot machine produces crazy
-
-::
-
- 'Brandon'  11101010111010110111000101110001
- 'Brendon'  10001011110000111111010101011101
- 'Brando'   01111111011101000001011000100100
- 3.14       01000100011110011110000010111001
- (2, 7, 0)  10010011101110001000000000000110
+When does it expand?
+When does it contract?
 
 
 so a dictionary makes a small list
