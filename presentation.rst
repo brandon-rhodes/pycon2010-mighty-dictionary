@@ -510,6 +510,10 @@ import my_inspect
 d = {1:1, 2:2, 3:3, 4:4, 5:5, 6:6}
 my_inspect.display_dictionary(d)
 
+- make steps of dictionary lookup clearer at beginning (HASH then COMPARE)
+- at end, show how to repackage dictionary (how?)
+- mention not to do the __hash__/__eq__ trick with mutable objects
+
 .. raw:: html
 
   <script type="text/javascript">
