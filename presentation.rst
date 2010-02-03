@@ -287,6 +287,16 @@ The Gamble
 | When a key arrives whose slot is already taken,
 | the dictionary has experienced a *collision*
 
+Stupid Dictionary Trick #1
+==========================
+
+>>> from timeit import timeit
+>>> d = {}
+>>> for i in range(0, 681*1024, 1024):
+...     d[i] = None
+>>> timeit('d[0]', 'd=%r' % d)
+>>> timeit('d[680*1024]', 'd=%r' % d)
+
 Collisions
 ==========
 
@@ -415,8 +425,8 @@ Small dictionaries
 
 ::
 
- >>> mytuple = ('Brandon', 35)
- >>> print mytuple[NAME], 'is', mytuple[AGE]
+ x>>> mytuple = ('Brandon', 35)
+ x>>> print mytuple[NAME], 'is', mytuple[AGE]
  Brandon is 35
 
 Objects and their dicts
@@ -513,6 +523,8 @@ my_inspect.display_dictionary(d)
 - make steps of dictionary lookup clearer at beginning (HASH then COMPARE)
 - at end, show how to repackage dictionary (how?)
 - mention not to do the __hash__/__eq__ trick with mutable objects
+- talk about how setdefault() does only one lookup
+- show how space is used (and wasted) for several ranges of dict size
 
 .. raw:: html
 
