@@ -297,6 +297,17 @@ Stupid Dictionary Trick #1
 >>> timeit('d[0]', 'd=%r' % d)
 >>> timeit('d[680*1024]', 'd=%r' % d)
 
+Stupid Dictionary Trick #2
+==========================
+
+x>>> class Seven(object):
+x...     def __hash__(self): return 7
+x>>> sevens = [ Seven() for i in range(681) ]
+x>>> d = dict([ (seven, None) for seven in sevens ])
+x>>> timeit('d[0]', 'd=%r' % d)
+x>>> timeit('d[680*1024]', 'd=%r' % d)
+
+
 Collisions
 ==========
 
@@ -525,6 +536,8 @@ my_inspect.display_dictionary(d)
 - mention not to do the __hash__/__eq__ trick with mutable objects
 - talk about how setdefault() does only one lookup
 - show how space is used (and wasted) for several ranges of dict size
+- why dummy keys? because you could remove something from the middle of
+  a collision search sequence!
 
 .. raw:: html
 
