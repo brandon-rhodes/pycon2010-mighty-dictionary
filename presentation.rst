@@ -10,6 +10,11 @@ The Mighty Dictionary
 The Python List
 ===============
 
+.. image:: figures/average_probes.png
+
+The Python List
+===============
+
 | Stores objects under integer indexes
 
 .. .. image:: figures/list1.png
