@@ -2,19 +2,21 @@
 
 PREPARE!
 
->>> import sys, my_inspect
+>>> import my_inspect
+>>> from timeit import timeit
+
 >>> wfile = open('/usr/share/dict/words')
 >>> words = wfile.read().split()[:1365]
 >>> pmap = my_inspect.probe_all_steps(words)
->>> max(pmap.values())
+>>> len(pmap['Ajax'])
+1
+>>> len(pmap['Baal'])
 16
->>> [ w for w in pmap if len(pmap[w]) == 16 ]
-['Baal']
->>> pmap['Baal'][:8]
-[916L, 1401, 250, 1359, 399, 1156, 1722, 420]
->>> pmap['Baal'][8:]
-[53, 266, 1331, 512, 513, 518, 543, 668]
-
+>>> setup = "d=dict.fromkeys(%r)" % words
+>>> fast = timeit("d['Ajax']", setup)
+>>> slow = timeit("d['Baal']", setup)
+>>> '%.1f' % (slow/fast)
+'1.7'
 
 The Mighty Dictionary
 =====================

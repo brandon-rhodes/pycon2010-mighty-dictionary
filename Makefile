@@ -3,10 +3,10 @@
 #	wkhtmltopdf presentation.html presentation.pdf
 
 PYTHON := PYTHONPATH=/home/brandon/dictvis python
-SVGs := $(wildcard figures/*.svg)
-PNGs := $(addsuffix .png, $(basename $(SVGs)))
+SVGS := $(wildcard figures/*.svg)
+PNGS := $(addsuffix .png, $(basename $(SVGS)))
 
-all: presentation.html $(PNGs) figures
+all: presentation.html $(PNGS) figures
 
 presentation.html: presentation.rst bin/wrap_slides.py
 	rst2s5.py $< > $@
@@ -15,9 +15,14 @@ presentation.html: presentation.rst bin/wrap_slides.py
 $(PNGs): %.png: %.svg
 	inkscape -e $@ $<
 
-figures: figures/average_probes.png
-figures/average_probes.png: figures/average_probes.py figures/average_probes_data.txt
-	/usr/bin/python figures/average_probes.py figures/average_probes.png
+FIGURE_SCRIPTS := $(wildcard figures/*.py)
+FIGURES := $(addsuffix .png, $(basename $(FIGURE_SCRIPTS)))
 
+figures: $(FIGURES)
+$(FIGURES): %.png: %.py
+	/usr/bin/python $*.py $*.png
+
+figures/average_probes.png: figures/average_probes_data.txt
+figures/average_time.png: figures/average_probes_data.txt
 figures/average_probes_data.txt: figures/average_probes_data.py
 	$(PYTHON) $< $@
