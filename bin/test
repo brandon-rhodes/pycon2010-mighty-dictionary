@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env python
 
-PYTHONPATH=/home/brandon/dictvis \
-    python -m doctest $(dirname $0)/../presentation.rst
+import doctest, os, sys
+
+sys.path.append('/home/brandon/dictvis')
+doctest.testfile('../presentation.rst', optionflags=
+                 doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)

@@ -5,30 +5,12 @@ PREPARE!
 >>> import my_inspect
 >>> from timeit import timeit
 
->>> wfile = open('/usr/share/dict/words')
->>> words = wfile.read().split()[:1365]
->>> pmap = my_inspect.probe_all_steps(words)
->>> len(pmap['Ajax'])
-1
->>> len(pmap['Baal'])
-16
->>> setup = "d=dict.fromkeys(%r)" % words
->>> fast = timeit("d['Ajax']", setup)
->>> slow = timeit("d['Baal']", setup)
->>> '%.1f' % (slow/fast)
-'1.7'
-
 The Mighty Dictionary
 =====================
 
 :Author: Brandon Craig Rhodes
 :Occasion: Python Atlanta Meetup
 :Date: December 2009
-
-untitled
-========
-
-.. image:: figures/average_probes.png
 
 The Python List
 ===============
@@ -313,14 +295,64 @@ The Gamble
 Stupid Dictionary Trick #1
 ==========================
 
->>> from timeit import timeit
 >>> d = {}
 >>> for i in range(0, 681*1024, 1024):
 ...     d[i] = None
 >>> timeit('d[0]', 'd=%r' % d)
 >>> timeit('d[680*1024]', 'd=%r' % d)
 
-xxx
+Real-life collisions
+====================
+
+A dictionary of common words:
+
+>>> wfile = open('/usr/share/dict/words')
+>>> words = wfile.read().split()[:1365]
+>>> print words
+['A', "A's", ..., "Backus's", 'Bacon', "Bacon's"]
+
+We can examine which keys collide:
+
+>>> pmap = my_inspect.probe_all_steps(words)
+
+untitled
+========
+
+Some keys are in the first slot probed:
+
+>>> pmap['Ajax']
+[1330]
+>>> pmap['Agamemnon']
+[2020]
+
+While some keys collided several times:
+
+>>> pmap['Aristarchus']  # requires 5 probes
+[864, 1089, 801, 1108, 74]
+>>> pmap['Baal']         # requires 16 probes!
+[916, 1401, 250, 1359, 399, 1156, 1722, 420, 53,
+ 266, 1331, 512, 513, 518, 543, 668]
+
+untitled
+========
+
+.. image:: figures/average_probes.png
+
+untitled
+========
+
+But probes are very fast
+
+>>> setup = "d=dict.fromkeys(%r)" % words
+>>> fast = timeit("d['Ajax']", setup)
+>>> slow = timeit("d['Baal']", setup)
+>>> '%.1f' % (slow/fast)
+'1.7'
+
+untitled
+========
+
+.. image:: figures/average_time.png
 
 Stupid Dictionary Trick #2
 ==========================
