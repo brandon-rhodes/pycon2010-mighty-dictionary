@@ -1,5 +1,7 @@
 .. include:: <s5defs.txt>
 
+PREPARE!
+
 The Mighty Dictionary
 =====================
 

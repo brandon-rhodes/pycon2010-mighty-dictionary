@@ -7,10 +7,10 @@ SVGs := $(wildcard figures/*.svg)
 PNGs := $(addsuffix .png, $(basename $(SVGs)))
 
 all: presentation.html $(PNGs) figures
-figures: 
 
-presentation.html: presentation.rst
+presentation.html: presentation.rst bin/wrap_slides.py
 	rst2s5.py $< > $@
+	bin/wrap_slides.py $@
 
 $(PNGs): %.png: %.svg
 	inkscape -e $@ $<
