@@ -2,11 +2,11 @@
 #presentation.pdf: presentation.html
 #	wkhtmltopdf presentation.html presentation.pdf
 
-PYTHON := PYTHONPATH=/home/brandon/dictvis python
+PYTHON := PYTHONPATH=/home/brandon/dictvis /usr/bin/python
 SVGS := $(wildcard figures/*.svg)
 PNGS := $(addsuffix .png, $(basename $(SVGS)))
 
-all: presentation.html $(PNGS) figures
+all: presentation.html $(PNGS) all_figures
 
 presentation.html: presentation.rst bin/wrap_slides.py
 	rst2s5.py $< > $@
@@ -21,9 +21,9 @@ $(PNGs): %.png: %.svg
 FIGURE_SCRIPTS := $(wildcard figures/*.py)
 FIGURES := $(addsuffix .png, $(basename $(FIGURE_SCRIPTS)))
 
-figures: $(FIGURES)
+all_figures: $(FIGURES)
 $(FIGURES): %.png: %.py
-	/usr/bin/python $*.py $*.png
+	$(PYTHON) $*.py $*.png
 
 DATA_SCRIPTS := $(wildcard data/*.py)
 DATA_FILES := $(addsuffix .txt, $(basename $(DATA_SCRIPTS)))
