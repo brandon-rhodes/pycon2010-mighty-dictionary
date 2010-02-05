@@ -2,6 +2,20 @@
 
 PREPARE!
 
+>>> import sys, my_inspect
+>>> wfile = open('/usr/share/dict/words')
+>>> words = wfile.read().split()[:1365]
+>>> pmap = my_inspect.probe_all_steps(words)
+>>> max(pmap.values())
+16
+>>> [ w for w in pmap if len(pmap[w]) == 16 ]
+['Baal']
+>>> pmap['Baal'][:8]
+[916L, 1401, 250, 1359, 399, 1156, 1722, 420]
+>>> pmap['Baal'][8:]
+[53, 266, 1331, 512, 513, 518, 543, 668]
+
+
 The Mighty Dictionary
 =====================
 
@@ -303,6 +317,8 @@ Stupid Dictionary Trick #1
 ...     d[i] = None
 >>> timeit('d[0]', 'd=%r' % d)
 >>> timeit('d[680*1024]', 'd=%r' % d)
+
+xxx
 
 Stupid Dictionary Trick #2
 ==========================

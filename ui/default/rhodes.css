@@ -5,5 +5,7 @@ div.slide > table { width: 100%; height: 100%;
 div.slide > table > tbody > tr > td { vertical-align: middle;
                                       text-align: center; }
 div.slide table { margin-left: auto; margin-right: auto; }
-.literal { font-family: Inconsolata; }
-pre.literal-block, pre.doctest-block { text-align: left; font-size: 0.8em; }
+pre, .literal { font-family: Inconsolata; }
+pre.literal-block, pre.doctest-block {
+    text-align: left; font-size: 28px;
+}
