@@ -1,3 +1,4 @@
 #!/bin/bash
 
-python -m doctest $(dirname $0)/../presentation.rst
+PYTHONPATH=/home/brandon/dictvis \
+    python -m doctest $(dirname $0)/../presentation.rst
