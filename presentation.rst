@@ -9,8 +9,8 @@ The Mighty Dictionary
 :Occasion: Python Atlanta Meetup
 :Date: December 2009
 
-The Python List
-===============
+untitled
+========
 
 .. image:: figures/average_probes.png
 

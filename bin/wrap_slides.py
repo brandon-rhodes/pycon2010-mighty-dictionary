@@ -8,6 +8,9 @@ html = etree.HTML(s)
 slides = CSSSelector('div.slide')(html)
 for slide in slides:
     children = list(slide)
+    maybe_title = children[0]
+    if maybe_title.tag == 'h1' and maybe_title.text == 'untitled':
+        del children[0]
     del slide[:]
     table = etree.SubElement(slide, 'table')
     tr = etree.SubElement(table, 'tr')
