@@ -6,7 +6,8 @@ PYTHON := PYTHONPATH=/home/brandon/dictvis python
 SVGs := $(wildcard figures/*.svg)
 PNGs := $(addsuffix .png, $(basename $(SVGs)))
 
-all: presentation.html $(PNGs)
+all: presentation.html $(PNGs) figures
+figures: 
 
 presentation.html: presentation.rst
 	rst2s5.py $< > $@
@@ -14,6 +15,7 @@ presentation.html: presentation.rst
 $(PNGs): %.png: %.svg
 	inkscape -e $@ $<
 
+figures: figures/average_probes.png
 figures/average_probes.png: figures/average_probes.py figures/average_probes_data.txt
 	/usr/bin/python figures/average_probes.py figures/average_probes.png
 
