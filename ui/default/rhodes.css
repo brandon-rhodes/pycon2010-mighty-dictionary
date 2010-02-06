@@ -1,12 +1,16 @@
-body { background-color: gray; }
+/* Make the white 800x600 "slide" stand out against a gray background. */
+body { padding: 0; background-color: gray; }
 div.slide { padding: 0; width: 800px; height: 600px; background-color: white; }
+
+/* Basic slide layout, with content fully centered. */
 div.slide > table { width: 100%; height: 100%;
                     font-family: "URW Bookman L"; font-size: 36px; }
 div.slide > table > tbody > tr > td { vertical-align: middle;
                                       text-align: center; }
+
+/* Various kinds of content. */
 div.slide table { margin-left: auto; margin-right: auto; }
 h1 { font-size: 48px; }
 pre, .literal { font-family: Inconsolata; }
-pre.literal-block, pre.doctest-block {
-    text-align: left; font-size: 28px;
-}
+pre.literal-block, pre.doctest-block { text-align: left; font-size: 28px; }
+div.slide ul { text-align: left; margin-left: 1em; color: #700; }

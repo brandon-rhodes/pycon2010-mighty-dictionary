@@ -10,6 +10,8 @@ WIDTH, HEIGHT = 720, 480
 from contextlib import contextmanager
 
 def bits(n):
+    if n < 0:
+        n += 2**31
     s = bin(n)[2:]  # '0b...' without the '0b'
     s = '0' * (32 - len(s)) + s
     return unicode(s)
@@ -75,9 +77,13 @@ gold = (1, 0.9, 0.5)
 gray = (0.5, 0.5, 0.5)
 lightgray = (0.8, 0.8, 0.8)
 
-def draw_dictionary(d, x0, y0):
+def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
     """Supply `d` a Python dictionary."""
     o = my_inspect.dictobject(d)
+
+    cr.rectangle(0,0, WIDTH,HEIGHT)
+    cr.set_source_rgb(1,1,1)
+    cr.fill()
 
     with save(cr):
         if len(o) == 8:
@@ -97,7 +103,7 @@ def draw_dictionary(d, x0, y0):
         charwidth = cr.text_extents(u'M')[2]
         width = 100 #actually compute from font size later
 
-        cr.translate(x0, slot_height)  # upper-left corner of the dictionary
+        cr.translate(xoffset, yoffset)  # upper-left corner of the dictionary
 
         with save(cr):
             cr.set_source_rgb(0,0,0)
@@ -112,7 +118,7 @@ def draw_dictionary(d, x0, y0):
             with save(cr):
                 entry = o.ma_table[i]
 
-                height = draw_textbox([gold, bits(i)[:sigbits]], gray)
+                height = draw_textbox([gold, bits(i)[-sigbits:]], gray)
                 cr.rel_move_to(gap, 0)
 
                 try:
@@ -123,9 +129,9 @@ def draw_dictionary(d, x0, y0):
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u' ' * hashwidth], lightgray)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 9], lightgray)
+                    draw_textbox([white, u' ' * 7], lightgray)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 9], lightgray)
+                    draw_textbox([white, u' ' * 6], lightgray)
                     continue
 
                 if k is my_inspect.dummy:
@@ -133,9 +139,9 @@ def draw_dictionary(d, x0, y0):
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u' ' * hashwidth], gray)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' <dummy> '], gray)
+                    draw_textbox([white, u'<dummy>'], gray)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 9], gray)
+                    draw_textbox([white, u' ' * 6], gray)
                     continue
 
                 h = entry.me_hash
@@ -146,22 +152,19 @@ def draw_dictionary(d, x0, y0):
                 else:
                     draw_textbox([white, u'/'], red)
                 cr.rel_move_to(gap, 0)
-                bstr = bits(h)[:hashwidth - 1]
+                bstr = bits(h)[-hashwidth+1:]
                 texts = [lightgray, u'…' + bstr[:-sigbits],
                          gold, bstr[-sigbits:]]
                 draw_textbox(texts, gray)
                 cr.rel_move_to(gap, 0)
-                draw_textbox([white, u'%9s' % repr(k)], gray)
+                draw_textbox([white, u'%7s' % repr(k)], gray)
                 cr.rel_move_to(gap, 0)
-                draw_textbox([white, u'%9s' % repr(v)], gray)
+                draw_textbox([white, u'%6s' % repr(v)], gray)
 
 #
 
 if __name__ == '__main__':
-    cr.rectangle(0,0, WIDTH,HEIGHT)
-    cr.set_source_rgb(1,1,1)
-    cr.fill()
-    d = {0: 'zero', 'Brandon': 1, 'Brendon': 2, 'brandy': 3,
-         3.141: 'pi', 'nom': 9}
-    draw_dictionary(d, 100, 20)
+    d = {'ftp': 21, 'ssh': 22, 'smtp': 25, 'time': 37, 'www': 80}
+    #draw_dictionary(d, 720, 480, 100, 100)
+    draw_dictionary(d, 512, 330, 10, 30)
     surface.write_to_png(sys.argv[1])

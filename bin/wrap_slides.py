@@ -40,7 +40,8 @@ for pre in pre_list:
     pre[:] = pre2[:]
 
 style_list = CSSSelector('style')(html)
-style_list[0].text += HtmlFormatter().get_style_defs('.doctest-block')
+style_list[0].text += HtmlFormatter().get_style_defs(['.doctest-block',
+                                                      '.literal-block'])
 
 # Save.
 

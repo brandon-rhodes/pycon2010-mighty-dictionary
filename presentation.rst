@@ -5,6 +5,12 @@ PREPARE!
 >>> import my_inspect
 >>> from timeit import timeit
 
+::
+
+ # All timeit() metrics were performed with
+ # Python 2.6 as packaged on Ubuntu 9.10, and
+ # run on my 2GHz Dell Latitude D630.
+
 The Mighty Dictionary
 =====================
 
@@ -12,22 +18,70 @@ The Mighty Dictionary
 :Occasion: Python Atlanta Meetup
 :Date: December 2009
 
-The Python List
-===============
+untitled
+========
 
-| Stores objects under integer indexes
+| **Q:** How can Python lists access
+| every one of their items
+| with equal speed?
 
-.. .. image:: figures/list1.png
+::
 
-| ``[0]   [1]   [2]   [3]   [4]``
-| ``'Jan' 'Feb' 'Mar' 'Apr' 'May'``
+ timeit('mylist[0]', 'mylist = [1] * 9000')
+ # --> 0.053692102432250977
+ #     ~50 ns per getitem
 
-The Python List
-===============
+ timeit('mylist[7000]', 'mylist = [1] * 9000')
+ # --> 0.051460027694702148
+ #     ~50 ns per getitem
 
-| Stores objects under integer indexes
-| Assignment to ``[`` *n* ``]`` is quick
-| Retrieval from ``[`` *n* ``]`` is quick
+untitled
+========
+
+| **A:** Python lists use segments of RAM
+| and RAM acts like a Python list (!)
+
+* RAM is a vast array
+* Addressed by sequential integers
+* Its first address is zero!
+
+untitled
+========
+
+ | For a list at RAM address 336,
+ | item address *a* = 336 + 4 × *i*
+
+::
+
+                Real RAM Addresses
+
+  335       340       345       350       355
+ -------------------------------------------------
+  | |0|1|2|3|.|.|.|.|.|.|.|.|.|.|.|.|0|1|2|3| | |
+ -------------------------------------------------
+     ^-----^ ^-----^ ^-----^ ^-----^ ^-----^
+       [0]     [1]     [2]     [3]     [4]
+
+                Python List Indexes
+
+The Dictionary
+==============
+
+| Keys can be *anything*
+
+>>> d = {}
+
+
+| 1. Turn each key into an index
+| 2. Hope they wind up unique
+| 3. If not, deal with it
+
+The plan in more detail
+=======================
+
+| 1. Given a key, compute its *hash*
+| 2. Truncate the hash to get a slot
+| 3. If that
 
 How?
 ====
@@ -300,8 +354,9 @@ Stupid Dictionary Trick #1
 >>> d = {}
 >>> for i in range(0, 681*1024, 1024):
 ...     d[i] = None
->>> timeit('d[0]', 'd=%r' % d)
->>> timeit('d[680*1024]', 'd=%r' % d)
+
+x>>> timeit('d[0]', 'd=%r' % d)
+x>>> timeit('d[680*1024]', 'd=%r' % d)
 
 Real-life collisions
 ====================
