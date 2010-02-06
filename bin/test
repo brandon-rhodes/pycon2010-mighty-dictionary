@@ -3,5 +3,5 @@
 import doctest, os, sys
 
 sys.path.append('/home/brandon/dictvis')
-doctest.testfile('../presentation.rst', optionflags=
-                 doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)
+doctest.testfile('../presentation.rst', encoding='utf-8',
+                 optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)

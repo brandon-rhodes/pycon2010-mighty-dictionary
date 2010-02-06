@@ -5,6 +5,6 @@ text = wordfile.read().decode('utf-8')
 words = [ w for w in text.split()
           if w == w.lower() and len(w) < 6 ]
 
-d = dict.fromkeys(words[:6])
-surface = insert1.draw_dictionary(d, 720, 452, 240, 2)
+d = dict.fromkeys(words[:85])
+surface = insert1.draw_dictionary(d, 720, 452, 10, 2)
 surface.write_to_png(sys.argv[1])

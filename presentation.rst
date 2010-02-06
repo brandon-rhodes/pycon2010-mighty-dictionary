@@ -190,7 +190,6 @@ The Three Rules
 | **#3** If at first you do not succeed,
 | try, try again
 
-
 show some collisions
 
 The Three Consequences
@@ -200,6 +199,85 @@ The Three Consequences
 
 | To keep collisions rare,
 | dicts resize when only ⅔ full
+
+untitled
+========
+
+| Let's watch a dictionary in action
+| against words pulled from the standard
+| dictionary on my Ubuntu box
+
+>>> wordfile = open('/usr/share/dict/words')
+>>> text = wordfile.read().decode('utf-8')
+>>> words = [ w for w in text.split()
+...     if w == w.lower() and len(w) < 6 ]
+>>> words
+[u'a', u'abaci', u'aback', u'abaft', u'abase',
+ ..., u'zoom', u'zooms', u'zoos', ...]
+
+untitled
+========
+
+::
+
+ d = {}
+ # Again, an empty dict has 8 elements
+
+.. image:: figures/insert0.png
+
+untitled
+========
+
+::
+
+ d = dict.fromkeys(words[:5])
+ # collision rate 40%
+ # but now ⅔ full — on verge of resizing!
+
+.. image:: figures/words5.png
+
+untitled
+========
+
+::
+
+ d = dict.fromkeys(words[:6])
+ # Resizes ×4 to 32, collision rate drops to 0% 
+
+.. image:: figures/words6.png
+
+untitled
+========
+
+::
+
+ d = dict.fromkeys(words[:21])
+ # ⅔ full again — collision rate 29%
+
+.. image:: figures/words21.png
+
+untitled
+========
+
+::
+
+ d = dict.fromkeys(words[:22])
+ # Resizes ×4 to 128, collision rate drops to 9%
+
+.. image:: figures/words22.png
+
+untitled
+========
+
+::
+
+ d = dict.fromkeys(words[:85])
+ # ⅔ full again — collision rate 33%
+
+.. image:: figures/words85.png
+
+untitled
+========
 
 | **#2** keep dummies
 

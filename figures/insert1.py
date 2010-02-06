@@ -106,8 +106,14 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
             font_size = 28
             slot_height = 40
             gap = 2
+            show_value = True
         else:
-            hashwidth = 16 # width of the hash field
+            if len(o) == 32:
+                hashwidth = 16 # width of the hash field
+                show_value = True
+            else:
+                hashwidth = sigbits + 1 # width of the hash field
+                show_value = False
             font_size = 10
             slot_height = 12
             gap = 0
@@ -121,12 +127,16 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
         with save(cr):
             cr.set_source_rgb(0,0,0)
             cr.translate(2,-6)
-            cr.show_text(u'Idx      Hash     Key   Value')
+            if len(o) == 8:
+                cr.show_text(u'Idx      Hash     Key   Value')
 
         height = 0
 
         for i in range(len(o)):
-            cr.rel_move_to(0, height + gap)
+            if i == 0 or i % 32:
+                cr.rel_move_to(0, height + gap)
+            else:
+                cr.rel_move_to(176, -31 * height + -30 * gap)
 
             with save(cr):
                 entry = o.ma_table[i]
@@ -143,8 +153,9 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
                     draw_textbox([white, u' ' * hashwidth], lightgray)
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u' ' * 7], lightgray)
-                    cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 6], lightgray)
+                    if show_value:
+                        cr.rel_move_to(gap, 0)
+                        draw_textbox([white, u' ' * 6], lightgray)
                     continue
 
                 if k is my_inspect.dummy:
@@ -153,8 +164,9 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
                     draw_textbox([white, u' ' * hashwidth], gray)
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u'<dummy>'], gray)
-                    cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 6], gray)
+                    if show_value:
+                        cr.rel_move_to(gap, 0)
+                        draw_textbox([white, u' ' * 6], gray)
                     continue
 
                 h = entry.me_hash
@@ -171,8 +183,9 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
                 draw_textbox(texts, gray)
                 cr.rel_move_to(gap, 0)
                 draw_textbox([white, u'%-7s' % myrepr(k)], gray)
-                cr.rel_move_to(gap, 0)
-                draw_textbox([white, u'%-6s' % myrepr(v)], gray)
+                if show_value:
+                    cr.rel_move_to(gap, 0)
+                    draw_textbox([white, u'%-6s' % myrepr(v)], gray)
 
     return surface
 #
