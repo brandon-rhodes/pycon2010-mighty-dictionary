@@ -1,9 +1,16 @@
 .. include:: <s5defs.txt>
 
-PREPARE!
-
 >>> import my_inspect
 >>> from timeit import timeit
+>>> def bits(n):
+...    sign = '1' if n < 0 else '0'
+...    m = n if n >= 0 else (n + 2**31)
+...    s = '%31s' % bin(m)[2:][-31:]
+...    return sign + s.replace(' ', '0')
+>>> print bits(1)
+00000000000000000000000000000001
+>>> print bits(-1)
+11111111111111111111111111111111
 
 ::
 
@@ -15,8 +22,8 @@ The Mighty Dictionary
 =====================
 
 :Author: Brandon Craig Rhodes
-:Occasion: Python Atlanta Meetup
-:Date: December 2009
+:Occasion: PyCon Atlanta
+:Date: February 2010
 
 untitled
 ========
@@ -48,8 +55,9 @@ untitled
 untitled
 ========
 
- | For a list at RAM address 336,
- | item address *a* = 336 + 4 × *i*
+ | If the list begins at RAM address 336,
+ | Python can jump to item *i* simply
+ | by computing (336 + 4 × *i*)
 
 ::
 
@@ -62,23 +70,102 @@ untitled
      ^-----^ ^-----^ ^-----^ ^-----^ ^-----^
        [0]     [1]     [2]     [3]     [4]
 
-                Python List Indexes
+         Python List Items (4 bytes each)
 
 The Dictionary
 ==============
 
-| Keys can be *anything*
+| Uses *keys* instead of *indexes*
+| and keys can be almost *anything*
 
+>>> d = {
+...    'Brandon': 35,
+...    3.1415: 'pi',
+...    'flickr.com': '68.142.214.24',
+...    (2, 6, 4): 'Python version',
+...    }
+
+The Three Rules
+===============
+
+| #1 A Dictionary is really a List
+
+untitled
+========
+
+>>> # An empty dictionary is an 8-element list!
 >>> d = {}
 
+.. image:: figures/insert0.png
 
-| 1. Turn each key into an index
-| 2. Hope they wind up unique
-| 3. If not, deal with it
+The Three Rules
+===============
+
+| #2 Keys are *hashed* to produce indexes
+
+untitled
+========
+
+| Python lets you see hashing
+| in action through the builtin hash()
+
+>>> for key in 'Monty', 3.1415, (2, 6, 4):
+...     print bits(hash(key)), key
+01100111100110010110110011111110 Monty
+01101010101011010000100100000010 3.1415
+01000111010110111010001100110111 (2, 6, 4)
+
+untitled
+========
+
+| Quite similar values often have
+| very different hashes
+
+>>> k1 = bits(hash('Monty'))
+>>> k2 = bits(hash('Money'))
+>>> diff = ('^ '[a==b] for a,b in zip(k1, k2))
+>>> print k1; print k2; print ''.join(diff)
+01100111100110010110110011111110
+01100110101101001000101011101001
+       ^  ^ ^^ ^^^^  ^^    ^ ^^^
+
+untitled
+========
+
+| Hashes look crazy, but the *same* value
+| always returns the *same* hash!
+
+>>> for key in 3.1415, 3.1415, 3.1415:
+...     print bits(hash(key)), key
+01101010101011010000100100000010 3.1415
+01101010101011010000100100000010 3.1415
+01101010101011010000100100000010 3.1415
+
+untitled
+========
+
+>>> # Python uses the lowest 3 hash bits
+>>> # since the dictionary has 8 elements
+>>> print bits(hash('ftp'))[-3:]
+001
+>>> d['ftp'] = 21
+
+.. image:: figures/insert1.png
+
+untitled
+========
+
+>>> print bits(hash('ssh'))[-3:]
+101
+>>> d['ssh'] = 22
+
+.. image:: figures/insert2.png
+
 
 The plan in more detail
 =======================
 
+'Monty', 3.1415, (2, 6, 4):
 | 1. Given a key, compute its *hash*
 | 2. Truncate the hash to get a slot
 | 3. If that
@@ -200,7 +287,7 @@ A: Hash functions
 
 ``hash('Brendon')  ->  11110100001111000000101010100011``
 
->>> hash('brandy')
+hash('brandy')
 
 A: Hash functions
 =================

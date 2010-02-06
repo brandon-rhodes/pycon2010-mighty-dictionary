@@ -25,6 +25,8 @@ all_figures: $(FIGURES)
 $(FIGURES): %.png: %.py
 	$(PYTHON) $*.py $*.png
 
+figures/insert0.png figures/insert2.png figures/insert5.png: figures/insert1.py
+
 DATA_SCRIPTS := $(wildcard data/*.py)
 DATA_FILES := $(addsuffix .txt, $(basename $(DATA_SCRIPTS)))
 

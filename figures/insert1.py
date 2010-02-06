@@ -6,15 +6,15 @@ import cairo, sys
 import my_inspect
 
 WIDTH, HEIGHT = 720, 480
+cr = None
 
 from contextlib import contextmanager
 
 def bits(n):
-    if n < 0:
-        n += 2**31
-    s = bin(n)[2:]  # '0b...' without the '0b'
-    s = '0' * (32 - len(s)) + s
-    return unicode(s)
+   sign = '1' if n < 0 else '0'
+   m = n if n >= 0 else (n + 2**31)
+   s = '%31s' % bin(m)[2:][-31:]
+   return sign + s.replace(' ', '0')
 
 @contextmanager
 def save(cr):
@@ -24,18 +24,12 @@ def save(cr):
     cr.restore()
     cr.move_to(*p)
 
-surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, WIDTH, HEIGHT)
-cr = cairo.Context(surface)
-
 pat = cairo.LinearGradient(0.0, 0.0, 0.0, 1.0)
 pat.add_color_stop_rgba(1, 0.7, 0, 0, 1) # First stop, 100% opacity
 pat.add_color_stop_rgba(0, 0.9, 0.7, 0.2, 1) # Last stop, 100% opacity
 
-cr.select_font_face('Inconsolata',
-                    cairo.FONT_SLANT_NORMAL,
-                    cairo.FONT_WEIGHT_BOLD)
-
 def draw_textbox(texts, rectcolor):
+    global cr
 
     with save(cr):
         colors = [ a for i, a in enumerate(texts) if i%2 == 0 ]
@@ -79,6 +73,15 @@ lightgray = (0.8, 0.8, 0.8)
 
 def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
     """Supply `d` a Python dictionary."""
+    global cr
+
+    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, WIDTH, HEIGHT)
+    cr = cairo.Context(surface)
+
+    cr.select_font_face('Inconsolata',
+                        cairo.FONT_SLANT_NORMAL,
+                        cairo.FONT_WEIGHT_BOLD)
+
     o = my_inspect.dictobject(d)
 
     cr.rectangle(0,0, WIDTH,HEIGHT)
@@ -107,8 +110,8 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
 
         with save(cr):
             cr.set_source_rgb(0,0,0)
-            cr.translate(2,-2)
-            cr.show_text(u'Idx    Hash')
+            cr.translate(2,-6)
+            cr.show_text(u'Idx      Hash     Key   Value')
 
         height = 0
 
@@ -161,10 +164,11 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
                 cr.rel_move_to(gap, 0)
                 draw_textbox([white, u'%6s' % repr(v)], gray)
 
+    return surface
 #
 
 if __name__ == '__main__':
-    d = {'ftp': 21, 'ssh': 22, 'smtp': 25, 'time': 37, 'www': 80}
+    d = {'ftp': 21}
     #draw_dictionary(d, 720, 480, 100, 100)
-    draw_dictionary(d, 512, 330, 10, 30)
+    surface = draw_dictionary(d, 512, 330, 10, 30)
     surface.write_to_png(sys.argv[1])
