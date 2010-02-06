@@ -88,7 +88,7 @@ The Dictionary
 The Three Rules
 ===============
 
-| #1 A Dictionary is really a List
+| **#1** A Dictionary is really a List
 
 untitled
 ========
@@ -101,7 +101,7 @@ untitled
 The Three Rules
 ===============
 
-| #2 Keys are *hashed* to produce indexes
+| **#2** Keys are *hashed* to produce indexes
 
 untitled
 ========
@@ -160,6 +160,35 @@ untitled
 >>> d['ssh'] = 22
 
 .. image:: figures/insert2.png
+
+untitled
+========
+
+>>> [ bits(hash(s))[-3:] for s
+...   in 'smtp','time','www' ]
+['100', '111', '010']
+>>> d['smtp'] = 25
+>>> d['time'] = 37
+>>> d['www'] = 80
+
+.. image:: figures/insert5.png
+
+untitled
+========
+
+>>> # Lookup simply uses the hash too
+>>> print bits(hash('smtp'))[-3:]
+100
+>>> print d['smtp']
+25
+
+.. image:: figures/insert5.png
+
+The Three Rules
+===============
+
+| **#3** If at first you do not succeed,
+| try, try again
 
 
 The plan in more detail
