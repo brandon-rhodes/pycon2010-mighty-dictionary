@@ -82,9 +82,17 @@ def draw_dictionary(d, x0, y0):
 
     with save(cr):
         if len(o) == 8:
+            sigbits = 3
+            hashwidth = 9 # width of the hash field
             font_size = 28
             slot_height = 40
             gap = 2
+        elif len(o) == 32:
+            sigbits = 5
+            hashwidth = 16 # width of the hash field
+            font_size = 10
+            slot_height = 12
+            gap = 0
 
         cr.set_font_size(font_size)
         charwidth = cr.text_extents(u'M')[2]
@@ -105,7 +113,7 @@ def draw_dictionary(d, x0, y0):
             with save(cr):
                 entry = o.ma_table[i]
 
-                height = draw_textbox([gold, bits(i, 3)], gray)
+                height = draw_textbox([gold, bits(i, sigbits)], gray)
                 cr.rel_move_to(gap, 0)
 
                 try:
@@ -114,7 +122,7 @@ def draw_dictionary(d, x0, y0):
                     # This is a completely empty entry.
                     draw_textbox([white, u' '], lightgray)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 9], lightgray)
+                    draw_textbox([white, u' ' * hashwidth], lightgray)
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u' ' * 7], lightgray)
                     cr.rel_move_to(gap, 0)
@@ -124,7 +132,7 @@ def draw_dictionary(d, x0, y0):
                 if k is my_inspect.dummy:
                     draw_textbox([white, u'!'], red)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 9], gray)
+                    draw_textbox([white, u' ' * hashwidth], gray)
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u'<dummy>'], gray)
                     cr.rel_move_to(gap, 0)
@@ -139,8 +147,9 @@ def draw_dictionary(d, x0, y0):
                 else:
                     draw_textbox([white, u'/'], red)
                 cr.rel_move_to(gap, 0)
-                bstr = bits(h, 8)[:8]
-                texts = [lightgray, u'…' + bstr[:-3], gold, bstr[-3:]]
+                bstr = bits(h, 8)[:hashwidth - 1]
+                texts = [lightgray, u'…' + bstr[:-sigbits],
+                         gold, bstr[-sigbits:]]
                 draw_textbox(texts, gray)
                 cr.rel_move_to(gap, 0)
                 draw_textbox([white, u'%7s' % repr(k)], gray)
@@ -154,7 +163,8 @@ cr.set_source_rgb(1,1,1)
 cr.fill()
 d = {'a': 1, 'b': 2, 'i': 3}
 del d['a']
-
+d = {'boss': 1, 'phew': 2, 'rock': 3, 'jazz': 4, 'felt': 5,
+     'bozo': 8}
 draw_dictionary(d, 100, 20)
 
 surface.write_to_png(sys.argv[1])
