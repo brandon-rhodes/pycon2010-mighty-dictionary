@@ -9,10 +9,9 @@ WIDTH, HEIGHT = 720, 480
 
 from contextlib import contextmanager
 
-def bits(n, width=None):
+def bits(n):
     s = bin(n)[2:]  # '0b...' without the '0b'
-    if width:
-        s = '0' * (width - len(s)) + s
+    s = '0' * (32 - len(s)) + s
     return unicode(s)
 
 @contextmanager
@@ -113,7 +112,7 @@ def draw_dictionary(d, x0, y0):
             with save(cr):
                 entry = o.ma_table[i]
 
-                height = draw_textbox([gold, bits(i, sigbits)], gray)
+                height = draw_textbox([gold, bits(i)[:sigbits]], gray)
                 cr.rel_move_to(gap, 0)
 
                 try:
@@ -124,9 +123,9 @@ def draw_dictionary(d, x0, y0):
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u' ' * hashwidth], lightgray)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 7], lightgray)
+                    draw_textbox([white, u' ' * 9], lightgray)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 7], lightgray)
+                    draw_textbox([white, u' ' * 9], lightgray)
                     continue
 
                 if k is my_inspect.dummy:
@@ -134,9 +133,9 @@ def draw_dictionary(d, x0, y0):
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u' ' * hashwidth], gray)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u'<dummy>'], gray)
+                    draw_textbox([white, u' <dummy> '], gray)
                     cr.rel_move_to(gap, 0)
-                    draw_textbox([white, u' ' * 7], gray)
+                    draw_textbox([white, u' ' * 9], gray)
                     continue
 
                 h = entry.me_hash
@@ -147,24 +146,22 @@ def draw_dictionary(d, x0, y0):
                 else:
                     draw_textbox([white, u'/'], red)
                 cr.rel_move_to(gap, 0)
-                bstr = bits(h, 8)[:hashwidth - 1]
+                bstr = bits(h)[:hashwidth - 1]
                 texts = [lightgray, u'…' + bstr[:-sigbits],
                          gold, bstr[-sigbits:]]
                 draw_textbox(texts, gray)
                 cr.rel_move_to(gap, 0)
-                draw_textbox([white, u'%7s' % repr(k)], gray)
+                draw_textbox([white, u'%9s' % repr(k)], gray)
                 cr.rel_move_to(gap, 0)
-                draw_textbox([white, u'%7s' % repr(v)], gray)
+                draw_textbox([white, u'%9s' % repr(v)], gray)
 
 #
 
-cr.rectangle(0,0, WIDTH,HEIGHT)
-cr.set_source_rgb(1,1,1)
-cr.fill()
-d = {'a': 1, 'b': 2, 'i': 3}
-del d['a']
-d = {'boss': 1, 'phew': 2, 'rock': 3, 'jazz': 4, 'felt': 5,
-     'bozo': 8}
-draw_dictionary(d, 100, 20)
-
-surface.write_to_png(sys.argv[1])
+if __name__ == '__main__':
+    cr.rectangle(0,0, WIDTH,HEIGHT)
+    cr.set_source_rgb(1,1,1)
+    cr.fill()
+    d = {0: 'zero', 'Brandon': 1, 'Brendon': 2, 'brandy': 3,
+         3.141: 'pi', 'nom': 9}
+    draw_dictionary(d, 100, 20)
+    surface.write_to_png(sys.argv[1])

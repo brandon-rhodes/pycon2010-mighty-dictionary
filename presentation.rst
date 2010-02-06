@@ -146,6 +146,8 @@ A: Hash functions
 
 ``hash('Brendon')  ->  11110100001111000000101010100011``
 
+>>> hash('brandy')
+
 A: Hash functions
 =================
 
