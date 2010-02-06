@@ -11,10 +11,15 @@ cr = None
 from contextlib import contextmanager
 
 def bits(n):
-   sign = '1' if n < 0 else '0'
-   m = n if n >= 0 else (n + 2**31)
-   s = '%31s' % bin(m)[2:][-31:]
-   return sign + s.replace(' ', '0')
+    sign = '1' if n < 0 else '0'
+    m = n if n >= 0 else (n + 2**31)
+    s = '%31s' % bin(m)[2:][-31:]
+    return sign + s.replace(' ', '0')
+
+def myrepr(obj):
+    if isinstance(obj, unicode):
+        return u"'%s'" % (obj,)
+    return repr(obj)
 
 @contextmanager
 def save(cr):
@@ -89,14 +94,19 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
     cr.fill()
 
     with save(cr):
+
+        mask = o.ma_mask
+        sigbits = 0
+        while mask:
+            sigbits += 1
+            mask >>= 1
+
         if len(o) == 8:
-            sigbits = 3
             hashwidth = 9 # width of the hash field
             font_size = 28
             slot_height = 40
             gap = 2
-        elif len(o) == 32:
-            sigbits = 5
+        else:
             hashwidth = 16 # width of the hash field
             font_size = 10
             slot_height = 12
@@ -160,9 +170,9 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
                          gold, bstr[-sigbits:]]
                 draw_textbox(texts, gray)
                 cr.rel_move_to(gap, 0)
-                draw_textbox([white, u'%7s' % repr(k)], gray)
+                draw_textbox([white, u'%-7s' % myrepr(k)], gray)
                 cr.rel_move_to(gap, 0)
-                draw_textbox([white, u'%6s' % repr(v)], gray)
+                draw_textbox([white, u'%-6s' % myrepr(v)], gray)
 
     return surface
 #
