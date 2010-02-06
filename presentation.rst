@@ -191,6 +191,22 @@ The Three Rules
 | try, try again
 
 
+show some collisions
+
+The Three Consequences
+======================
+
+| **#1** Dicts resize early
+
+| To keep collisions rare,
+| dicts resize when only ⅔ full
+
+| **#2** keep dummies
+
+| **#3** order depends on history
+| (can reorder at each resize! see below)
+
+
 A Question of Space
 ===================
 
