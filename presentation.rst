@@ -76,7 +76,7 @@ The Dictionary
 ==============
 
 | Uses *keys* instead of *indexes*
-| and keys can be almost *anything*
+| and keys can be almost anything
 
 >>> d = {
 ...    'Brandon': 35,
@@ -144,9 +144,10 @@ untitled
 untitled
 ========
 
->>> # Python uses the lowest 3 hash bits
->>> # since the dictionary has 8 elements
->>> print bits(hash('ftp'))[-3:]
+>>> b = bits(hash('ftp'))
+>>> print b
+11010010011111111001001010100001
+>>> print b[-3:]  # last 3 bits = 8 combinations
 001
 >>> d['ftp'] = 21
 
@@ -182,7 +183,7 @@ untitled
 >>> print d['smtp']
 25
 
-.. image:: figures/insert5.png
+.. image:: figures/insert5b.png
 
 The Three Rules
 ===============

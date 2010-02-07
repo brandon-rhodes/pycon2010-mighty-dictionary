@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 
-from math import ceil
+from math import ceil, pi
 import cairo, sys
 import my_inspect
 
@@ -32,6 +32,13 @@ def save(cr):
 pat = cairo.LinearGradient(0.0, 0.0, 0.0, 1.0)
 pat.add_color_stop_rgba(1, 0.7, 0, 0, 1) # First stop, 100% opacity
 pat.add_color_stop_rgba(0, 0.9, 0.7, 0.2, 1) # Last stop, 100% opacity
+
+def center_text(cr, x, y, text):
+    tx, ty, twidth, theight = cr.text_extents(text)[:4]
+    print tx, ty, twidth, theight
+    cr.move_to(x - tx - twidth / 2, y - ty - theight / 2)
+    cr.show_text(text)
+    cr.fill()
 
 def draw_textbox(texts, rectcolor):
     global cr
@@ -67,8 +74,17 @@ def draw_textbox(texts, rectcolor):
     cr.rel_move_to(width, 0)
     return height
 
+def draw_arrowhead(x, y):
+    with save(cr):
+        cr.translate(x, y)
+        cr.move_to(0, -10)
+        cr.line_to(20, 0)
+        cr.line_to(0, 10)
+        cr.fill()
+
 #
 
+black = (0, 0, 0)
 white = (1, 1, 1)
 red = (0.7, 0, 0)
 green = (0, 0.7, 0)
@@ -76,7 +92,7 @@ gold = (1, 0.9, 0.5)
 gray = (0.5, 0.5, 0.5)
 lightgray = (0.8, 0.8, 0.8)
 
-def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
+def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset, lookup_path=None):
     """Supply `d` a Python dictionary."""
     global cr
 
@@ -186,6 +202,26 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset):
                 if show_value:
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u'%-6s' % myrepr(v)], gray)
+
+    if lookup_path is not None:
+        with save(cr):
+            n = lookup_path[0]
+            cr.translate(xoffset, yoffset)
+            cr.set_source_rgb(*black)
+            y = (n - 1) * (height + gap + 0.5) + height / 2
+            cr.set_line_width(6)
+            cr.move_to(-100, y)
+            cr.rel_line_to(40, 0)
+            cr.stroke()
+            draw_arrowhead(-60, y)
+
+            cr.set_source_rgb(*red)
+            cr.set_font_size(32)
+            cr.arc(-20, y, 13.5, 0, pi * 2)
+            cr.fill()
+
+            cr.set_source_rgb(*white)
+            center_text(cr, -20, y - 1, '×')
 
     return surface
 #
