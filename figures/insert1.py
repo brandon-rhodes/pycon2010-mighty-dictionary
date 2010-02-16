@@ -229,5 +229,5 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset, lookup_path=None):
 if __name__ == '__main__':
     d = {'ftp': 21}
     #draw_dictionary(d, 720, 480, 100, 100)
-    surface = draw_dictionary(d, 512, 330, 10, 30)
+    surface = draw_dictionary(d, 720, 330, 104, 30)
     surface.write_to_png(sys.argv[1])
