@@ -424,11 +424,28 @@ untitled
 Consequence #2
 ==============
 
+| Because collisions move keys
+| away from their natural hash values,
+| key order is quite sensitive
+| to dictionary history
+
+ >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
+ >>> d.keys()
+ ['toil', 'Double', 'and', 'trouble', 'double']
+ >>> e = {'Double': 1, 'double': 2, 'and': 4, 'toil': 3, 'trouble': 5}
+ >>> e.keys()
+ ['and', 'Double', 'trouble', 'toil', 'double']
+ >>> d == e
+ True
+
+Consequence #3
+==============
+
 | The lookup algorithm is actually
 | more complicated than
 | “hash, truncate, look”
 
-Consequence #2
+Consequence #3
 ==============
 
 | It's more like “until you find
@@ -475,7 +492,7 @@ KeyError: 'netstat'
 
 .. image:: figures/collide5g.png
 
-Consequence #3
+Consequence #4
 ==============
 
 | Not all lookups are created equal.
@@ -496,7 +513,7 @@ x>>> timeit('d[0]', 'd=%r' % d)
 x>>> timeit('d[680*1024]', 'd=%r' % d)
 FIX THE ABOVE
 
-Consequence #4
+Consequence #5
 ==============
 
 | When deleting a key,
@@ -671,7 +688,7 @@ untitled
 | Gradually more crowded as keys are added
 | Then suddenly less as dict resizes
 
-Consequence #5
+Consequence #6
 ==============
 
 | Average dictionary
@@ -730,76 +747,12 @@ untitled
 
 .. image:: figures/average_time.png
 
-Stupid Dictionary Trick #2
-==========================
-
-x>>> class Seven(object):
-x...     def __hash__(self): return 7
-x>>> sevens = [ Seven() for i in range(681) ]
-x>>> d = dict([ (seven, None) for seven in sevens ])
-x>>> timeit('d[0]', 'd=%r' % d)
-x>>> timeit('d[680*1024]', 'd=%r' % d)
-
-
-Collisions
-==========
-
-| Only the first key with a given hash value
-| gets to live in that slot
-
-.. class:: incremental
-
-| Every subsequent key gets placed in another slot
-
-.. class:: incremental
-
-| When you look up one of the later keys,
-| the dictionary has to look through every
-| previous key involved in the collision
-| before it finds the one you want
-
-Collisions
-==========
-
-| When a hash table is given *more*
-| space in which to hold *n* items,
-
-.. class:: incremental
-
-| collisions are *fewer,*
-
-.. class:: incremental
-
-| inserts happen *faster,*
-
-.. class:: incremental
-
-| and lookups cost *less*.
-
-The Gamble
-==========
-
-| So *the gamble* is that by taking extra room
-| the dictionary will provide you with nearly
-| instantaneous results.
-
-Iteration
-=========
-
-| When you iterate over a dictionary,
-| it steps in order through its hash table
-
-Consequence #6
+Consequence #7
 ==============
 
-| Dicts can reorder during new key insert
-| (can reorder at each resize! see below)
-
-Iteration
-=========
-
-| **Consequence #1.** Triggering a dictionary resize
-| can change the order of existing elements
+| Because of resizing,
+| a dictionary can completely reorder
+| during an otherwise innocent insert
 
  >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
  >>> d.keys()
@@ -808,12 +761,12 @@ Iteration
  >>> d.keys()
  ['and', 'fire', 'Double', 'double', 'toil', 'trouble']
 
-Iteration
-=========
+Consequence #8
+==============
 
-| **Consequence #2.** The dictionary could lose its place
-| an add or remove caused a resize during iteration, so it
-| refuses the change with a ``RuntimeError``
+| Because an insert can radically
+| reorder a dictionary, key insertion
+| is prohibited during iteration
 
  >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
  >>> for key in d:
@@ -823,116 +776,53 @@ Iteration
    File "<stdin>", line 1, in <module>
  RuntimeError: dictionary changed size during iteration
 
-Iteration
-=========
+Take-away #1
+============
 
-| **Consequence #3.** Because collisions move keys
-| away from their natural hash values, key order
-| is sensitive to dictionary history
+1. Don't rely on order
+2. Don't insert while iterating
+3. Can't have mutable keys
 
- >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
- >>> d.keys()
- ['toil', 'Double', 'and', 'trouble', 'double']
- >>> e = {'Double': 1, 'double': 2, 'and': 4, 'toil': 3, 'trouble': 5}
- >>> e.keys()
- ['and', 'Double', 'trouble', 'toil', 'double']
- >>> d == e
- True
+| The restrictions on dictionaries
+| can seem arbitrary if you don't know
+| how they work
 
-Iteration
-=========
+Take-away #1
+============
 
-| **Consequence #4.** If a dictionary has
-| been recently resized, its key order will
-| have been reordered even if it is now equal
+1. Don't rely on order
+2. Don't insert while iterating
+3. Can't have mutable keys
 
- >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
- >>> e = dict(d)
- >>> e['fire'] = 6
- >>> del e['fire']
- >>> d.keys()
- ['toil', 'Double', 'and', 'trouble', 'double']
- >>> e.keys()
- ['and', 'Double', 'double', 'toil', 'trouble']
+| Hopefully you now have a picture
+| in your head that makes the
+| restrictions make sense!
 
-Iteration
-=========
+Take-away #2
+============
 
-| *Ergo:* a dictionary cannot guarantee the order
-| in which you encounter its keys when iterating
+| Dictionaries trade space for time
 
-Small dictionaries
-==================
+| If you need more space,
+| there are alternatives
 
-| If you keep thousands of small dictionaries,
-| the wasted space can become significant
+* Tuples or namedtuples (Python 2.6)
+* Give classes ``__slots__``
 
-Small dictionaries
-==================
+Take-away #3
+============
 
-| Instead, try using a tuple with index constants
-| or, in Python 2.6, a namedtuple
+| If your class needs its own ``__hash__()``
+| method you now know how hashes
+| should behave
 
-::
+1. Scatter bits like crazy
+2. Equal instances **must** have equal hashes
+3. Must also implement ``__eq__()`` method
+4. Make hash and equality quick!
 
- x>>> mytuple = ('Brandon', 35)
- x>>> print mytuple[NAME], 'is', mytuple[AGE]
- Brandon is 35
-
-Objects and their dicts
-=======================
-
-| Normal objects have a ``__dict__`` dictionary
-| in which their instance attributes are stored
-
-.. class:: incremental
-
-| To avoid the overhead of using a dictionary,
-| you can specify ``__slots__`` for your class
-
-Hashing your own classes
-========================
-
-| Normally, each instance of a user class
-| is given a unique hash value, so that no
-| two instances will look like the same key
-
-::
-
- >>> class C(object): pass
- ... 
- >>> c1 = C()
- >>> c2 = C()
- >>> d = {c1: 1, c2: 2}
-
-Hashing your own classes
-========================
-
-| But what if your class instances represent *values*
-| that could be equal to one another?
-
-.. class:: incremental
-
-| Then equal values will deserve
-| to be treated as the same key!
-
-Hashing your own classes
-========================
-
-| Think of the two steps
-| that a dictionary must take
-| with each object offered as a key
-
-Hashing your own classes
-========================
-
-| **First,** give your class a ``__hash__()`` method
-| that returns a reasonable integer hash
-
-.. class:: incremental
-
-| **Second,** give your class an ``__eq__()`` method
-| with which the dictionary
+| (You can often get away with ``^``
+| all of the values inside the instance)
 
 Hashing your own classes
 ========================
@@ -948,6 +838,11 @@ Hashing your own classes
 
      def __hash__(self):
          return hash(self.x) ^ hash(self.y)
+
+Take-away #4
+============
+
+
 
 The End
 =======
