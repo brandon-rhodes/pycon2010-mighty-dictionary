@@ -452,6 +452,15 @@ Consequence #3
 | an empty slot, keep looking,
 | it could be here somewhere!”
 
+Lookup: really 5 steps
+======================
+
+* Compute the hash
+* Truncate it
+* Look in that slot
+* Compare hash, compare value
+* Keep looking
+
 untitled
 ========
 
@@ -852,28 +861,13 @@ Other material
 
 When does it contract?
 
-How much time does malloc take?  Both on going bigger and smaller!
-
 How much time does it take to look up collided objects?
 
-Measure wasted space!
- - Normally
- - When it contracts to very small
-
-
-import my_inspect
-d = {1:1, 2:2, 3:3, 4:4, 5:5, 6:6}
-my_inspect.display_dictionary(d)
+How much time does malloc take?  Both on going bigger and smaller!
 
 - emphasize that hashes compared before objects
-- when dicting your own object, make comparison fast!
 - make steps of dictionary lookup clearer at beginning (HASH then COMPARE)
-- at end, show how to repackage dictionary (how?)
-- mention not to do the __hash__/__eq__ trick with mutable objects
 - talk about how setdefault() does only one lookup
-- show how space is used (and wasted) for several ranges of dict size
-- why dummy keys? because you could remove something from the middle of
-  a collision search sequence!
 
 .. raw:: html
 
