@@ -6,5 +6,5 @@ words = [ w for w in text.split()
           if w == w.lower() and len(w) < 6 ]
 
 d = dict.fromkeys(words[:5])
-surface = insert1.draw_dictionary(d, 512, 330, 10, 30)
+surface = insert1.draw_dictionary(d)
 surface.write_to_png(sys.argv[1])

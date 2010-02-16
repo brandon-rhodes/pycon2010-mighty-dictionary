@@ -5,7 +5,6 @@ from math import ceil, pi
 import cairo, sys
 import my_inspect
 
-WIDTH, HEIGHT = 720, 480
 cr = None
 
 from contextlib import contextmanager
@@ -92,9 +91,12 @@ gold = (1, 0.9, 0.5)
 gray = (0.5, 0.5, 0.5)
 lightgray = (0.8, 0.8, 0.8)
 
-def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset, lookup_path=None):
+def draw_dictionary(d, lookup_path=None):
     """Supply `d` a Python dictionary."""
     global cr
+
+    WIDTH=960
+    HEIGHT=480
 
     surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, WIDTH, HEIGHT)
     cr = cairo.Context(surface)
@@ -118,21 +120,24 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset, lookup_path=None):
             mask >>= 1
 
         if len(o) == 8:
+            xoffset = 168
             hashwidth = 9 # width of the hash field
-            font_size = 28
-            slot_height = 40
+            font_size = 36
             gap = 2
             show_value = True
         else:
             if len(o) == 32:
+                xoffset = 360
                 hashwidth = 16 # width of the hash field
                 show_value = True
             else:
+                xoffset = 140
                 hashwidth = sigbits + 1 # width of the hash field
                 show_value = False
             font_size = 10
-            slot_height = 12
             gap = 0
+
+        yoffset = font_size # room for header at top
 
         cr.set_font_size(font_size)
         charwidth = cr.text_extents(u'M')[2]
@@ -228,6 +233,5 @@ def draw_dictionary(d, WIDTH, HEIGHT, xoffset, yoffset, lookup_path=None):
 
 if __name__ == '__main__':
     d = {'ftp': 21}
-    #draw_dictionary(d, 720, 480, 100, 100)
-    surface = draw_dictionary(d, 720, 330, 104, 30)
+    surface = draw_dictionary(d)
     surface.write_to_png(sys.argv[1])
