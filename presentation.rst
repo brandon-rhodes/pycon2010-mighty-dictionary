@@ -327,6 +327,102 @@ The Three Rules
 | **#3 If at first you don't succeed,**
 | **try, try again**
 
+“Collision”
+===========
+
+| When two keys in a dictionary
+| want the same slot
+
+untitled
+========
+
+>>> # start over with a new dictionary
+>>> d = {}
+
+.. image:: figures/insert0.png
+
+untitled
+========
+
+>>> # first item inserts fine
+>>> d['smtp'] = 21
+
+.. image:: figures/collide1a.png
+
+untitled
+========
+
+>>> # first item inserts fine
+>>> d['smtp'] = 21
+
+.. image:: figures/collide1b.png
+
+untitled
+========
+
+>>> # second item collides!
+>>> d['dict'] = 2628
+
+.. image:: figures/collide2a.png
+
+untitled
+========
+
+>>> # second item collides!
+>>> d['dict'] = 2628
+
+.. image:: figures/collide2b.png
+
+untitled
+========
+
+>>> # third item also finds empty slot
+>>> d['svn'] = 3690
+
+.. image:: figures/collide3a.png
+
+untitled
+========
+
+>>> # third item also finds empty slot
+>>> d['svn'] = 3690
+
+.. image:: figures/collide3b.png
+
+untitled
+========
+
+>>> # fourth item has multiple collisions
+>>> d['ircd'] = 6667
+
+.. image:: figures/collide4a.png
+
+untitled
+========
+
+>>> # fourth item has multiple collisions
+>>> d['ircd'] = 6667
+
+.. image:: figures/collide4b.png
+
+untitled
+========
+
+>>> # fifth item collides, but less deeply
+>>> d['zope'] = 9673
+
+.. image:: figures/collide5a.png
+
+untitled
+========
+
+>>> # fifth item collides, but less deeply
+>>> d['zope'] = 9673
+
+.. image:: figures/collide5b.png
+
+
+d = {'smtp': 21, 'svn': 3690, 'dict': 2628, 'ircd': 6667, 'zope': 9673}
 
 
 The Three Consequences

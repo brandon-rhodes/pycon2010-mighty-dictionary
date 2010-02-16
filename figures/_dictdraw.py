@@ -215,22 +215,45 @@ def draw_dictionary(d, lookup_path=None):
         with save(cr):
             n = lookup_path[0]
             cr.translate(xoffset, yoffset)
-            cr.set_source_rgb(*black)
+
             y = 2 + n * (height + gap + 0.5) + height / 2
+            cr.set_source_rgb(*black)
             cr.set_line_width(6)
             cr.move_to(-100, y)
             cr.rel_line_to(40, 0)
             cr.stroke()
             draw_arrowhead(-60, y)
 
-            #cr.set_source_rgb(*red)
-            cr.set_source_rgb(*green)
+            if len(lookup_path) > 1:
+                cr.set_source_rgb(*red)
+            else:
+                cr.set_source_rgb(*green)
+
             cr.set_font_size(32)
-            cr.arc(-20, y, 13.5, 0, pi * 2)
+            cr.arc(-20, y, 13.5, 0, pi * 2)  # red or green circle
             cr.fill()
 
-            cr.set_source_rgb(*white)
-            #center_text(cr, -20, y - 1, '×')
+            if len(lookup_path) > 1:
+                cr.set_source_rgb(*white)
+                center_text(cr, -20, y - 1, '×')
+
+            for i in range(1, len(lookup_path)):
+                from_slot = lookup_path[i - 1]
+                dest_slot = lookup_path[i]
+                
+                yf = 2 + from_slot * (height + gap + 0.5) + height / 2
+                yd = 2 + dest_slot * (height + gap + 0.5) + height / 2
+                y0 = min(yf, yd)
+                y1 = max(yf, yd)
+
+                cr.set_source_rgb(*black)
+                cr.set_line_width(6)
+                cr.arc(690, (y0 + y1) / 2, (y1 - y0) / 2, 3 * pi / 2, pi / 2)
+                cr.stroke()
+                with save(cr):
+                    cr.translate(690, yd)
+                    cr.rotate(pi)
+                    draw_arrowhead(0, 0)
 
     return surface
 #
