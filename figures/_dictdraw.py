@@ -140,7 +140,7 @@ def draw_dictionary(d, lookup_path=None):
             mask >>= 1
 
         if len(o) == 8:
-            xoffset = 168
+            xoffset = 140
             hashwidth = 9 # width of the hash field
             font_size = 36
             gap = 2

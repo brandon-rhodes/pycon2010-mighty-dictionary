@@ -110,6 +110,7 @@ The Three Rules
 ===============
 
 | **#1** A Dictionary is really a List
+
 | **#2 Keys are hashed to produce indexes**
 
 untitled
@@ -150,7 +151,7 @@ untitled
 01101010101011010000100100000010 3.1415
 01101010101011010000100100000010 3.1415
 
-Indexes and Keys
+Keys and Indexes
 ================
 
 | To build an index, Python uses
@@ -185,80 +186,80 @@ untitled
 untitled
 ========
 
+>>> d['ssh'] = 22
+
 >>> print bits(hash('ssh'))[-3:]
 101
-
->>> d['ssh'] = 22
 
 .. image:: figures/insert2a.png
 
 untitled
 ========
 
+>>> d['ssh'] = 22
+
 >>> print bits(hash('ssh'))[-3:]
 101
-
->>> d['ssh'] = 22
 
 .. image:: figures/insert2b.png
 
 untitled
 ========
 
+>>> d['smtp'] = 25
+
 >>> print bits(hash('smtp'))[-3:]
 100
-
->>> d['smtp'] = 25
 
 .. image:: figures/insert3a.png
 
 untitled
 ========
 
+>>> d['smtp'] = 25
+
 >>> print bits(hash('smtp'))[-3:]
 100
-
->>> d['smtp'] = 25
 
 .. image:: figures/insert3b.png
 
 untitled
 ========
 
+>>> d['time'] = 37
+
 >>> print bits(hash('time'))[-3:]
 111
-
->>> d['time'] = 37
 
 .. image:: figures/insert4a.png
 
 untitled
 ========
 
+>>> d['time'] = 37
+
 >>> print bits(hash('time'))[-3:]
 111
-
->>> d['time'] = 37
 
 .. image:: figures/insert4b.png
 
 untitled
 ========
 
+>>> d['www'] = 80
+
 >>> print bits(hash('www'))[-3:]
 010
-
->>> d['www'] = 80
 
 .. image:: figures/insert5a.png
 
 untitled
 ========
 
+>>> d['www'] = 80
+
 >>> print bits(hash('www'))[-3:]
 010
-
->>> d['www'] = 80
 
 .. image:: figures/insert5b.png
 
@@ -300,10 +301,11 @@ Consequence #1
 untitled
 ========
 
+>>> # Different than our insertion order:
 >>> print d
 {'ftp': 21, 'www': 80, 'smtp': 25, 'ssh': 22,
  'time': 37}
->>> # same order as in table!
+>>> # But same order as in the hash table!
 
 .. image:: figures/insert6.png
 
@@ -324,8 +326,8 @@ The Three Rules
 | **#1** A Dictionary is really a List
 | **#2** Keys are *hashed* to produce indexes
 
-| **#3 If at first you don't succeed,**
-| **try, try again**
+| **#3 If at first you don't**
+| **succeed, try, try again**
 
 “Collision”
 ===========
@@ -420,6 +422,83 @@ untitled
 >>> d['zope'] = 9673
 
 .. image:: figures/collide5b.png
+
+untitled
+========
+
+::
+
+# Only ⅖ of the keys in this dictionary
+# can be found in the right slot
+
+.. image:: figures/collide5b.png
+
+Consequence #2
+==============
+
+| The lookup algorithm is actually
+| more complicated than
+| “hash, truncate, find”
+
+Consequence #2
+==============
+
+| It's more like “until you find
+| an empty slot, keep looking,
+| it could be here somewhere!”
+
+Lookup algorithm
+================
+
+::
+
+ # Lookup goes something like this:
+
+ i = hash(key)[-numbits:]
+ while not slot_empty(i):
+     if slot_key(i) == k:
+         return 'Success!'
+     i = next_slot(i, key)
+ return 'Not found'
+
+ # Can only terminate by finding the key
+ # or by reaching an empty slot!
+
+untitled
+========
+
+>>> # Successful lookup, length 1
+>>> d['svn']
+3690
+
+.. image:: figures/collide5d.png
+
+untitled
+========
+
+>>> # Successful lookup, length 4
+>>> d['ircd']
+6667
+
+.. image:: figures/collide5e.png
+
+untitled
+========
+
+>>> # Unsuccessful lookup, length 4
+>>> d['netstat']
+Traceback (most recent call last):
+  ...
+KeyError: 'netstat'
+
+
+.. image:: figures/collide5f.png
+
+Consequence #3
+==============
+
+need to leave dummy values around
+
 
 
 d = {'smtp': 21, 'svn': 3690, 'dict': 2628, 'ircd': 6667, 'zope': 9673}
