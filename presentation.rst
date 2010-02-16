@@ -475,6 +475,16 @@ KeyError: 'netstat'
 
 .. image:: figures/collide5g.png
 
+Consequence #3
+==============
+
+| Not all lookups are created equal.
+
+.. class:: incremental
+
+| Some finish at their first slot
+| Some loop over several slots
+
 Stupid Dictionary Trick #1
 ==========================
 
@@ -485,16 +495,6 @@ Stupid Dictionary Trick #1
 x>>> timeit('d[0]', 'd=%r' % d)
 x>>> timeit('d[680*1024]', 'd=%r' % d)
 FIX THE ABOVE
-
-Consequence #3
-==============
-
-| Not all lookups are created equal.
-
-.. class:: incremental
-
-| Some finish at their first slot
-| Some loop over several slots
 
 Consequence #4
 ==============
@@ -629,7 +629,7 @@ untitled
 
 ::
 
- d = dict.fromkeys(words[:6])
+ d['abash'] = None
  # Resizes ×4 to 32, collision rate drops to 0% 
 
 .. image:: figures/words6.png
@@ -649,7 +649,7 @@ untitled
 
 ::
 
- d = dict.fromkeys(words[:22])
+ d['abode'] = None
  # Resizes ×4 to 128, collision rate drops to 9%
 
 .. image:: figures/words22.png
@@ -665,7 +665,7 @@ untitled
 .. image:: figures/words85.png
 
 untitled
---------
+========
 
 | Life cycle as dictionary fills:
 | Gradually more crowded as keys are added
