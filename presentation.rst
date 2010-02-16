@@ -272,11 +272,11 @@ Lookup: same 3 steps
 untitled
 ========
 
->>> print bits(hash('smtp'))[-3:]
-100
-
 >>> print d['smtp']
 25
+
+>>> print bits(hash('smtp'))[-3:]
+100
 
 .. image:: figures/lookup1a.png
 
@@ -426,7 +426,7 @@ Consequence #2
 
 | The lookup algorithm is actually
 | more complicated than
-| “hash, truncate, find”
+| “hash, truncate, look”
 
 Consequence #2
 ==============
@@ -456,6 +456,17 @@ untitled
 untitled
 ========
 
+>>> # Unsuccessful lookup, length 1
+>>> d['nsca']
+Traceback (most recent call last):
+  ...
+KeyError: 'nsca'
+
+.. image:: figures/collide5f.png
+
+untitled
+========
+
 >>> # Unsuccessful lookup, length 4
 >>> d['netstat']
 Traceback (most recent call last):
@@ -463,16 +474,83 @@ Traceback (most recent call last):
 KeyError: 'netstat'
 
 
-.. image:: figures/collide5f.png
+.. image:: figures/collide5g.png
 
 Consequence #3
 ==============
 
-need to leave dummy values around
+| Not all lookups are created equal.
 
+.. class:: incremental
 
+| Some finish at their first slot
+| Some loop over several slots
 
-d = {'smtp': 21, 'svn': 3690, 'dict': 2628, 'ircd': 6667, 'zope': 9673}
+Consequence #4
+==============
+
+| When deleting a key,
+| you need to leave
+| “dummy” slots
+
+untitled
+========
+
+::
+
+ del d['smtp']
+
+ # Can we simply make its slot empty?
+
+.. image:: figures/collide5c.png
+
+untitled
+========
+
+::
+
+ del d['smtp']
+
+ # But what would happen to d['ircd']?
+
+.. image:: figures/collide5e.png
+
+untitled
+========
+
+| When a key is deleted,
+| its slot *cannot* simply
+| be marked as empty
+
+.. class:: incremental
+
+| Otherwise, any keys
+| that collided with it would
+| now be impossible to find!
+
+.. class:: incremental
+
+| So we create a dummy key instead
+
+untitled
+========
+
+>>> # Creates a <dummy> slot
+
+>>> del d['smtp']
+
+.. image:: figures/collide5h.png
+
+untitled
+========
+
+>>> # That way, we can still find d['ircd']
+
+>>> d['ircd']
+6667
+
+.. image:: figures/collide5h.png
+
 
 
 The Three Consequences
