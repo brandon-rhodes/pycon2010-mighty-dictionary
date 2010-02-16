@@ -21,8 +21,8 @@ $(PNGs): %.png: %.svg
 # Both figures and data files are built by corresponding Python scripts
 # of the same name.
 
-FIGURE_SCRIPTS := $(wildcard figures/*.py)
-FIGURES := $(addsuffix .png, $(filter-out _%, $(basename $(FIGURE_SCRIPTS))))
+FIGURE_SCRIPTS := $(filter-out figures/_dictdraw.py, $(wildcard figures/*.py))
+FIGURES := $(addsuffix .png, $(basename $(FIGURE_SCRIPTS)))
 
 all_figures: $(FIGURES)
 $(FIGURES): %.png: %.py

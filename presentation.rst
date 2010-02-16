@@ -151,7 +151,19 @@ untitled
 001
 >>> d['ftp'] = 21
 
-.. image:: figures/insert1.png
+.. image:: figures/insert1a.png
+
+untitled
+========
+
+>>> b = bits(hash('ftp'))
+>>> print b
+11010010011111111001001010100001
+>>> print b[-3:]  # last 3 bits = 8 combinations
+001
+>>> d['ftp'] = 21
+
+.. image:: figures/insert1b.png
 
 untitled
 ========

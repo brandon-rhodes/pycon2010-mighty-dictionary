@@ -95,8 +95,13 @@ def draw_dictionary(d, lookup_path=None):
     """Supply `d` a Python dictionary."""
     global cr
 
+    o = my_inspect.dictobject(d)
+
     WIDTH=960
-    HEIGHT=480
+    if len(o) == 8:
+        HEIGHT=406
+    else:
+        HEIGHT=480
 
     surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, WIDTH, HEIGHT)
     cr = cairo.Context(surface)
@@ -104,8 +109,6 @@ def draw_dictionary(d, lookup_path=None):
     cr.select_font_face('Inconsolata',
                         cairo.FONT_SLANT_NORMAL,
                         cairo.FONT_WEIGHT_BOLD)
-
-    o = my_inspect.dictobject(d)
 
     cr.rectangle(0,0, WIDTH,HEIGHT)
     cr.set_source_rgb(1,1,1)
@@ -213,20 +216,21 @@ def draw_dictionary(d, lookup_path=None):
             n = lookup_path[0]
             cr.translate(xoffset, yoffset)
             cr.set_source_rgb(*black)
-            y = (n - 1) * (height + gap + 0.5) + height / 2
+            y = 2 + n * (height + gap + 0.5) + height / 2
             cr.set_line_width(6)
             cr.move_to(-100, y)
             cr.rel_line_to(40, 0)
             cr.stroke()
             draw_arrowhead(-60, y)
 
-            cr.set_source_rgb(*red)
+            #cr.set_source_rgb(*red)
+            cr.set_source_rgb(*green)
             cr.set_font_size(32)
             cr.arc(-20, y, 13.5, 0, pi * 2)
             cr.fill()
 
             cr.set_source_rgb(*white)
-            center_text(cr, -20, y - 1, '×')
+            #center_text(cr, -20, y - 1, '×')
 
     return surface
 #
