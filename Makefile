@@ -19,14 +19,14 @@ $(PNGs): %.png: %.svg
 # of the same name.
 
 FIGURE_SCRIPTS := $(wildcard figures/*.py)
-FIGURES := $(addsuffix .png, $(basename $(FIGURE_SCRIPTS)))
+FIGURES := $(addsuffix .png, $(filter-out _%, $(basename $(FIGURE_SCRIPTS))))
 
 all_figures: $(FIGURES)
 $(FIGURES): %.png: %.py
 	$(PYTHON) $*.py $*.png
 
 $(filter figures/insert% figures/collide% figures/words%, $(FIGURES)): \
-  figures/insert1.py
+  figures/_dictdraw.py
 
 DATA_SCRIPTS := $(wildcard data/*.py)
 DATA_FILES := $(addsuffix .txt, $(basename $(DATA_SCRIPTS)))
