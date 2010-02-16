@@ -34,7 +34,6 @@ pat.add_color_stop_rgba(0, 0.9, 0.7, 0.2, 1) # Last stop, 100% opacity
 
 def center_text(cr, x, y, text):
     tx, ty, twidth, theight = cr.text_extents(text)[:4]
-    print tx, ty, twidth, theight
     cr.move_to(x - tx - twidth / 2, y - ty - theight / 2)
     cr.show_text(text)
     cr.fill()
@@ -90,6 +89,24 @@ green = (0, 0.7, 0)
 gold = (1, 0.9, 0.5)
 gray = (0.5, 0.5, 0.5)
 lightgray = (0.8, 0.8, 0.8)
+
+def draw_button(cr, x, y, is_collision=True):
+    """Draw a green or red circle showing a hit or a collision."""
+    with save(cr):
+        cr.translate(x, y)
+
+        if is_collision:
+            cr.set_source_rgb(*red)
+        else:
+            cr.set_source_rgb(*green)
+
+        cr.set_font_size(32)
+        cr.arc(0, 0, 13.5, 0, pi * 2)  # red or green circle
+        cr.fill()
+
+        if is_collision:
+            cr.set_source_rgb(*white)
+            center_text(cr, 0.8, -1, '×')
 
 def draw_dictionary(d, lookup_path=None):
     """Supply `d` a Python dictionary."""
@@ -224,18 +241,12 @@ def draw_dictionary(d, lookup_path=None):
             cr.stroke()
             draw_arrowhead(-60, y)
 
-            if len(lookup_path) > 1:
-                cr.set_source_rgb(*red)
-            else:
-                cr.set_source_rgb(*green)
-
-            cr.set_font_size(32)
-            cr.arc(-20, y, 13.5, 0, pi * 2)  # red or green circle
-            cr.fill()
+            draw_button(cr, -20, y, len(lookup_path) > 1)
 
             if len(lookup_path) > 1:
-                cr.set_source_rgb(*white)
-                center_text(cr, -20, y - 1, '×')
+                cr.move_to(650, y)
+                cr.rel_line_to(40, 0)
+                cr.stroke()
 
             for i in range(1, len(lookup_path)):
                 from_slot = lookup_path[i - 1]
@@ -248,8 +259,12 @@ def draw_dictionary(d, lookup_path=None):
 
                 cr.set_source_rgb(*black)
                 cr.set_line_width(6)
+                cr.move_to(690, y0)
                 cr.arc(690, (y0 + y1) / 2, (y1 - y0) / 2, 3 * pi / 2, pi / 2)
                 cr.stroke()
+
+                draw_button(cr, 652, yd, i + 1 < len(lookup_path))
+
                 with save(cr):
                     cr.translate(690, yd)
                     cr.rotate(pi)
