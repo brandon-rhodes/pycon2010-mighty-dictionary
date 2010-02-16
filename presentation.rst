@@ -473,8 +473,18 @@ Traceback (most recent call last):
   ...
 KeyError: 'netstat'
 
-
 .. image:: figures/collide5g.png
+
+Stupid Dictionary Trick #1
+==========================
+
+>>> d = {}
+>>> for i in range(0, 681*1024, 1024):
+...     d[i] = None
+
+x>>> timeit('d[0]', 'd=%r' % d)
+x>>> timeit('d[680*1024]', 'd=%r' % d)
+FIX THE ABOVE
 
 Consequence #3
 ==============
@@ -535,7 +545,8 @@ untitled
 untitled
 ========
 
->>> # Creates a <dummy> slot
+>>> # Creates a <dummy> slot that
+>>> # can be re-used as storage
 
 >>> del d['smtp']
 
@@ -549,17 +560,32 @@ untitled
 >>> d['ircd']
 6667
 
-.. image:: figures/collide5h.png
+.. image:: figures/collide5i.png
 
+Stupid Dictionary Trick #2
+==========================
 
+>>> del d['svn'], d['dict'], d['zope']
+>>> d['ircd']
+6667
+>>> # Still requires 4 steps!
 
-The Three Consequences
-======================
+.. image:: figures/collide5j.png
 
-| **#1** Dicts resize early
+Optimization #1
+===============
+
+| Dicts refuse to get full
+
+.. class:: incremental
 
 | To keep collisions rare,
 | dicts resize when only ⅔ full
+
+.. class:: incremental
+
+| When < 50k entries, size ×4
+| When > 50k entries, size ×2
 
 untitled
 ========
@@ -582,7 +608,8 @@ untitled
 ::
 
  d = {}
- # Again, an empty dict has 8 elements
+ # Again, an empty dict has 8 slots
+ # Let's start filling it with keys
 
 .. image:: figures/insert0.png
 
@@ -638,70 +665,17 @@ untitled
 .. image:: figures/words85.png
 
 untitled
-========
+--------
 
-| **#2** keep dummies
+| Life cycle as dictionary fills:
+| Gradually more crowded as keys are added
+| Then suddenly less as dict resizes
 
-| **#3** order depends on history
-| (can reorder at each resize! see below)
+Consequence #5
+==============
 
-
-A Question of Space
-===================
-
-| The rules:
-
-.. class:: incremental
-
-| When dictionary exceeds 5 elements, size ×4
-| When dictionary exceeds ⅔ full, size ×4
-| When len > 50k entries, factor is ×2
-
-A Question of Space
-===================
-
-| Q: Why allow so much extra space?
-
-.. class:: incremental
-
-| A: To make gambling safer.
-
-The Gamble
-==========
-
-| The dictionary is based on a gamble.
-
-.. class:: incremental
-
-| The above example worked so well
-| because the last three digits of the hashes
-| *happened* to be distinct
-
-.. class:: incremental
-
-| What if they were not?
-
-The Gamble
-==========
-
-| What if we try adding these keys to a dict?
-
-| ``'The' 'sassy' 'Dane' 'pranced' 'showily'``
-
-.. class:: incremental
-
-| When a key arrives whose slot is already taken,
-| the dictionary has experienced a *collision*
-
-Stupid Dictionary Trick #1
-==========================
-
->>> d = {}
->>> for i in range(0, 681*1024, 1024):
-...     d[i] = None
-
-x>>> timeit('d[0]', 'd=%r' % d)
-x>>> timeit('d[680*1024]', 'd=%r' % d)
+| Average dictionary
+| performance is excellent
 
 Real-life collisions
 ====================
@@ -814,6 +788,12 @@ Iteration
 
 | When you iterate over a dictionary,
 | it steps in order through its hash table
+
+Consequence #6
+==============
+
+| Dicts can reorder during new key insert
+| (can reorder at each resize! see below)
 
 Iteration
 =========
