@@ -51,26 +51,7 @@ untitled
 * RAM is a vast array
 * Addressed by sequential integers
 * Its first address is zero!
-
-untitled
-========
-
- | If the list begins at RAM address 336,
- | Python can jump to item *i* simply
- | by computing (336 + 4 × *i*)
-
-::
-
-                Real RAM Addresses
-
-  335       340       345       350       355
- -------------------------------------------------
-  | |0|1|2|3|.|.|.|.|.|.|.|.|.|.|.|.|0|1|2|3| | |
- -------------------------------------------------
-     ^-----^ ^-----^ ^-----^ ^-----^ ^-----^
-       [0]     [1]     [2]     [3]     [4]
-
-         Python List Items (4 bytes each)
+* Easy to implement a list atop memory
 
 The Dictionary
 ==============
@@ -85,10 +66,17 @@ The Dictionary
 ...    (2, 6, 4): 'Python version',
 ...    }
 
+untitled
+========
+
+| How can we turn
+| the *keys* dictionaries use
+| into *indexes* that reach memory fast?
+
 The Three Rules
 ===============
 
-| **#1 A Dictionary is really a List**
+| **#1 A dictionary is really a list**
 
 untitled
 ========
@@ -109,7 +97,7 @@ untitled
 The Three Rules
 ===============
 
-| **#1** A Dictionary is really a List
+| **#1** A dictionary is really a list
 
 | **#2 Keys are hashed to produce indexes**
 
@@ -323,7 +311,7 @@ untitled
 The Three Rules
 ===============
 
-| **#1** A Dictionary is really a List
+| **#1** A dictionary is really a list
 | **#2** Keys are *hashed* to produce indexes
 
 | **#3 If at first you don't**
@@ -446,23 +434,6 @@ Consequence #2
 | It's more like “until you find
 | an empty slot, keep looking,
 | it could be here somewhere!”
-
-Lookup algorithm
-================
-
-::
-
- # Lookup goes something like this:
-
- i = hash(key)[-numbits:]
- while not slot_empty(i):
-     if slot_key(i) == k:
-         return 'Success!'
-     i = next_slot(i, key)
- return 'Not found'
-
- # Can only terminate by finding the key
- # or by reaching an empty slot!
 
 untitled
 ========
