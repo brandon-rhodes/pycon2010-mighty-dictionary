@@ -88,7 +88,7 @@ The Dictionary
 The Three Rules
 ===============
 
-| **#1** A Dictionary is really a List
+| **#1 A Dictionary is really a List**
 
 untitled
 ========
@@ -98,16 +98,25 @@ untitled
 
 .. image:: figures/insert0.png
 
+untitled
+========
+
+>>> # Can call it a “list” of “items”
+>>> # or a “hash table” with “slots”
+
+.. image:: figures/insert0.png
+
 The Three Rules
 ===============
 
-| **#2** Keys are *hashed* to produce indexes
+| **#1** A Dictionary is really a List
+| **#2 Keys are hashed to produce indexes**
 
 untitled
 ========
 
 | Python lets you see hashing
-| in action through the builtin hash()
+| in action through the hash() builtin
 
 >>> for key in 'Monty', 3.1415, (2, 6, 4):
 ...     print bits(hash(key)), key
@@ -141,27 +150,35 @@ untitled
 01101010101011010000100100000010 3.1415
 01101010101011010000100100000010 3.1415
 
+Indexes and Keys
+================
+
+| To build an index, Python uses
+| the bottom *n* bits of the hash
+
 untitled
 ========
+
+>>> d['ftp'] = 21
 
 >>> b = bits(hash('ftp'))
 >>> print b
 11010010011111111001001010100001
 >>> print b[-3:]  # last 3 bits = 8 combinations
 001
->>> d['ftp'] = 21
 
 .. image:: figures/insert1a.png
 
 untitled
 ========
 
+>>> d['ftp'] = 21
+
 >>> b = bits(hash('ftp'))
 >>> print b
 11010010011111111001001010100001
 >>> print b[-3:]  # last 3 bits = 8 combinations
 001
->>> d['ftp'] = 21
 
 .. image:: figures/insert1b.png
 
@@ -170,40 +187,147 @@ untitled
 
 >>> print bits(hash('ssh'))[-3:]
 101
+
 >>> d['ssh'] = 22
 
-.. image:: figures/insert2.png
+.. image:: figures/insert2a.png
 
 untitled
 ========
 
->>> [ bits(hash(s))[-3:] for s
-...   in 'smtp','time','www' ]
-['100', '111', '010']
->>> d['smtp'] = 25
->>> d['time'] = 37
->>> d['www'] = 80
+>>> print bits(hash('ssh'))[-3:]
+101
 
-.. image:: figures/insert5.png
+>>> d['ssh'] = 22
+
+.. image:: figures/insert2b.png
 
 untitled
 ========
 
->>> # Lookup simply uses the hash too
 >>> print bits(hash('smtp'))[-3:]
 100
+
+>>> d['smtp'] = 25
+
+.. image:: figures/insert3a.png
+
+untitled
+========
+
+>>> print bits(hash('smtp'))[-3:]
+100
+
+>>> d['smtp'] = 25
+
+.. image:: figures/insert3b.png
+
+untitled
+========
+
+>>> print bits(hash('time'))[-3:]
+111
+
+>>> d['time'] = 37
+
+.. image:: figures/insert4a.png
+
+untitled
+========
+
+>>> print bits(hash('time'))[-3:]
+111
+
+>>> d['time'] = 37
+
+.. image:: figures/insert4b.png
+
+untitled
+========
+
+>>> print bits(hash('www'))[-3:]
+010
+
+>>> d['www'] = 80
+
+.. image:: figures/insert5a.png
+
+untitled
+========
+
+>>> print bits(hash('www'))[-3:]
+010
+
+>>> d['www'] = 80
+
+.. image:: figures/insert5b.png
+
+untitled
+========
+
+::
+
+ d = {'ftp': 21, 'ssh': 22,
+      'smtp': 25, 'time': 37,
+      'www': 80}
+
+.. image:: figures/insert6.png
+
+Lookup: same 3 steps
+====================
+
+* Compute the hash
+* Truncate it
+* Look in that slot
+
+untitled
+========
+
+>>> print bits(hash('smtp'))[-3:]
+100
+
 >>> print d['smtp']
 25
 
-.. image:: figures/insert5b.png
+.. image:: figures/lookup1a.png
+
+Consequence #1
+==============
+
+| Dictionaries tend to return their
+| contents in a crazy order
+
+untitled
+========
+
+>>> print d
+{'ftp': 21, 'www': 80, 'smtp': 25, 'ssh': 22,
+ 'time': 37}
+>>> # same order as in table!
+
+.. image:: figures/insert6.png
+
+untitled
+========
+
+>>> # keys and values also in table order
+>>> d.keys()
+['ftp', 'www', 'smtp', 'ssh', 'time']
+>>> d.values()
+[21, 80, 25, 22, 37]
+
+.. image:: figures/insert6.png
 
 The Three Rules
 ===============
 
-| **#3** If at first you do not succeed,
-| try, try again
+| **#1** A Dictionary is really a List
+| **#2** Keys are *hashed* to produce indexes
 
-show some collisions
+| **#3 If at first you don't succeed,**
+| **try, try again**
+
+
 
 The Three Consequences
 ======================
