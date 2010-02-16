@@ -8,6 +8,9 @@ PNGS := $(addsuffix .png, $(basename $(SVGS)))
 
 all: presentation.html $(PNGS) all_figures
 
+test:
+	bin/test
+
 presentation.html: presentation.rst bin/wrap_slides.py
 	rst2s5.py $< > $@
 	bin/wrap_slides.py $@
