@@ -34,6 +34,7 @@ $(filter figures/insert% figures/collide% figures/words%, $(FIGURES)): \
 DATA_SCRIPTS := $(wildcard data/*.py)
 DATA_FILES := $(addsuffix .txt, $(basename $(DATA_SCRIPTS)))
 
+all: $(DATA_FILES)
 $(DATA_FILES): %.txt: %.py
 	$(PYTHON) $< $@
 
@@ -41,3 +42,4 @@ $(DATA_FILES): %.txt: %.py
 
 figures/average_probes.png: data/average_probes.txt
 figures/average_time.png: data/average_probes.txt
+figures/malloc_time.png: data/malloc_time.txt

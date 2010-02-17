@@ -429,14 +429,40 @@ Consequence #2
 | key order is quite sensitive
 | to dictionary history
 
- >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
+untitled
+========
+
+ >>> d = {'smtp': 21, 'dict': 2628,
+ ...   'svn': 3690, 'ircd': 6667, 'zope': 9673}
  >>> d.keys()
- ['toil', 'Double', 'and', 'trouble', 'double']
- >>> e = {'Double': 1, 'double': 2, 'and': 4, 'toil': 3, 'trouble': 5}
+ ['svn', 'dict', 'zope', 'smtp', 'ircd']
+
+.. image:: figures/keyorder1.png
+
+untitled
+========
+
+ >>> e = {'ircd': 6667, 'zope': 9673,
+ ...   'smtp': 21, 'dict': 2628, 'svn': 3690}
  >>> e.keys()
- ['and', 'Double', 'trouble', 'toil', 'double']
+ ['ircd', 'zope', 'smtp', 'svn', 'dict']
+
+.. image:: figures/keyorder2.png
+
+The same yet different
+======================
+
+| Although these two dictionaries
+| are considered equal, their different
+| histories put their keys
+| in a different order
+
  >>> d == e
  True
+ >>> d.keys()
+ ['svn', 'dict', 'zope', 'smtp', 'ircd']
+ >>> e.keys()
+ ['ircd', 'zope', 'smtp', 'svn', 'dict']
 
 Consequence #3
 ==============
@@ -514,13 +540,20 @@ Consequence #4
 Stupid Dictionary Trick #1
 ==========================
 
->>> d = {}
->>> for i in range(0, 681*1024, 1024):
-...     d[i] = None
+::
 
-x>>> timeit('d[0]', 'd=%r' % d)
-x>>> timeit('d[680*1024]', 'd=%r' % d)
-FIX THE ABOVE
+ threes = {3: 1, 3+8: 2, 3+16: 3,
+           3+24: 4, 3+30: 5}
+ timeit('d[3]', 'd=%r' % threes)    # -> 0.117...
+ timeit('d[3+30]', 'd=%r' % threes) # -> 0.127...
+
+.. image:: figures/stupid1.png
+
+Stupid Dictionary Trick #1
+==========================
+
+
+.. image:: figures/stupid1.png
 
 Consequence #5
 ==============
@@ -782,7 +815,7 @@ Consequence #8
  ...     d['fire'] = 6
  ... 
  Traceback (most recent call last):
-   File "<stdin>", line 1, in <module>
+   ...
  RuntimeError: dictionary changed size during iteration
 
 Take-away #1
@@ -851,7 +884,16 @@ Hashing your own classes
 Take-away #4
 ============
 
+| Equal values
+| should have equal hashes
+| regardless of their type!
 
+>>> hash(9)
+9
+>>> hash(9.0)
+9
+>>> hash(complex(9, 0))
+9
 
 The End
 =======
@@ -861,7 +903,9 @@ Other material
 
 When does it contract?
 
-How much time does it take to look up collided objects?
+>>> timeit("d=dict.fromkeys(range(5))")
+>>> timeit("d=dict.fromkeys(range(6))")
+>>> timeit("d=dict.fromkeys(range(7))")
 
 How much time does malloc take?  Both on going bigger and smaller!
 
