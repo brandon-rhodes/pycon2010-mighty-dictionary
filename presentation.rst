@@ -4,7 +4,7 @@
 >>> from timeit import timeit
 >>> def bits(n):
 ...    sign = '1' if n < 0 else '0'
-...    m = n if n >= 0 else (n + 2**31)
+...    m = (n + 2**31) if n < 0 else n
 ...    s = '%31s' % bin(m)[2:][-31:]
 ...    return sign + s.replace(' ', '0')
 >>> print bits(1)
@@ -900,12 +900,6 @@ The End
 
 Other material
 ==============
-
-When does it contract?
-
->>> timeit("d=dict.fromkeys(range(5))")
->>> timeit("d=dict.fromkeys(range(6))")
->>> timeit("d=dict.fromkeys(range(7))")
 
 How much time does malloc take?  Both on going bigger and smaller!
 
