@@ -3,10 +3,9 @@
 >>> import my_inspect
 >>> from timeit import timeit
 >>> def bits(n):
-...    sign = '1' if n < 0 else '0'
-...    m = (n + 2**31) if n < 0 else n
-...    s = '%31s' % bin(m)[2:][-31:]
-...    return sign + s.replace(' ', '0')
+...    n += 2**32
+...    return bin(n)[-32:]  # remove '0b'
+...
 >>> print bits(1)
 00000000000000000000000000000001
 >>> print bits(-1)
@@ -71,7 +70,7 @@ untitled
 
 | How can we turn
 | the *keys* dictionaries use
-| into *indexes* that reach memory fast?
+| into *indexes* that reach memory quickly?
 
 The Three Rules
 ===============
@@ -89,8 +88,8 @@ untitled
 untitled
 ========
 
->>> # Can call it a “list” of “items”
->>> # or a “hash table” with “slots”
+>>> # This “list” of “items” is managed
+>>> # as a “hash table” containing “slots”
 
 .. image:: figures/insert0.png
 
@@ -491,6 +490,7 @@ untitled
 ========
 
 >>> # Successful lookup, length 1
+>>> # Compares HASHES then compares VALUES
 >>> d['svn']
 3690
 
@@ -542,16 +542,22 @@ Stupid Dictionary Trick #1
 
 ::
 
+ # Because integers hash as themselves,
+ # we can create unlimited collisions!
  threes = {3: 1, 3+8: 2, 3+16: 3,
-           3+24: 4, 3+30: 5}
- timeit('d[3]', 'd=%r' % threes)    # -> 0.117...
- timeit('d[3+30]', 'd=%r' % threes) # -> 0.127...
+           3+24: 4, 3+32: 5}
 
 .. image:: figures/stupid1.png
 
 Stupid Dictionary Trick #1
 ==========================
 
+::
+
+ # Thanks to piling collisions atop each
+ # other, we can make lookup more expensive
+ timeit('d[3]', 'd=%r' % threes)    # -> 0.078
+ timeit('d[3+32]', 'd=%r' % threes) # -> 0.082
 
 .. image:: figures/stupid1.png
 
@@ -796,7 +802,8 @@ Consequence #7
 | a dictionary can completely reorder
 | during an otherwise innocent insert
 
- >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
+ >>> d = {'Double': 1, 'double': 2, 'toil': 3,
+ ...      'and': 4, 'trouble': 5}
  >>> d.keys()
  ['toil', 'Double', 'and', 'trouble', 'double']
  >>> d['fire'] = 6
@@ -810,10 +817,10 @@ Consequence #8
 | reorder a dictionary, key insertion
 | is prohibited during iteration
 
- >>> d = {'Double': 1, 'double': 2, 'toil': 3, 'and': 4, 'trouble': 5}
+ >>> d = {'Double': 1, 'double': 2, 'toil': 3,
+ ...     'and': 4, 'trouble': 5}
  >>> for key in d:
  ...     d['fire'] = 6
- ... 
  Traceback (most recent call last):
    ...
  RuntimeError: dictionary changed size during iteration
@@ -821,9 +828,9 @@ Consequence #8
 Take-away #1
 ============
 
-1. Don't rely on order
-2. Don't insert while iterating
-3. Can't have mutable keys
+* Don't rely on order
+* Don't insert while iterating
+* Can't have mutable keys
 
 | The restrictions on dictionaries
 | can seem arbitrary if you don't know
@@ -832,9 +839,9 @@ Take-away #1
 Take-away #1
 ============
 
-1. Don't rely on order
-2. Don't insert while iterating
-3. Can't have mutable keys
+* Don't rely on order
+* Don't insert while iterating
+* Can't have mutable keys
 
 | Hopefully you now have a picture
 | in your head that makes the

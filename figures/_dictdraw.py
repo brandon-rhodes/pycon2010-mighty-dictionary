@@ -108,7 +108,7 @@ def draw_button(cr, x, y, is_collision=True):
             cr.set_source_rgb(*white)
             center_text(cr, 0.8, -1, '×')
 
-def draw_dictionary(d, lookup_path=None):
+def draw_dictionary(d, *lookup_paths):
     """Supply `d` a Python dictionary."""
     global cr
 
@@ -228,7 +228,7 @@ def draw_dictionary(d, lookup_path=None):
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u'%-6s' % myrepr(v)], gray)
 
-    if lookup_path is not None:
+    for lookup_path in lookup_paths:
         with save(cr):
             n = lookup_path[0]
             cr.translate(xoffset, yoffset)
