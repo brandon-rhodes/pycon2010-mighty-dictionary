@@ -20,9 +20,8 @@
 The Mighty Dictionary
 =====================
 
-:Author: Brandon Craig Rhodes
-:Occasion: PyCon Atlanta
-:Date: February 2010
+| Brandon Craig Rhodes
+| PyCon 2010 Atlanta
 
 untitled
 ========
@@ -477,15 +476,6 @@ Consequence #3
 | an empty slot, keep looking,
 | it could be here somewhere!”
 
-Lookup: really 5 steps
-======================
-
-* Compute the hash
-* Truncate it
-* Look in that slot
-* Compare hash, compare value
-* Keep looking
-
 untitled
 ========
 
@@ -566,7 +556,7 @@ Consequence #5
 
 | When deleting a key,
 | you need to leave
-| “dummy” slots
+| “dummy” keys
 
 untitled
 ========
@@ -637,10 +627,8 @@ Stupid Dictionary Trick #2
 
 .. image:: figures/collide5j.png
 
-Optimization #1
-===============
-
-| Dicts refuse to get full
+Dicts refuse to get full
+========================
 
 .. class:: incremental
 
@@ -808,7 +796,8 @@ Consequence #7
  ['toil', 'Double', 'and', 'trouble', 'double']
  >>> d['fire'] = 6
  >>> d.keys()
- ['and', 'fire', 'Double', 'double', 'toil', 'trouble']
+ ['and', 'fire', 'Double', 'double', 'toil',
+  'trouble']
 
 Consequence #8
 ==============
@@ -823,29 +812,19 @@ Consequence #8
  ...     d['fire'] = 6
  Traceback (most recent call last):
    ...
- RuntimeError: dictionary changed size during iteration
+ RuntimeError: dictionary changed size during
+   iteration
 
 Take-away #1
 ============
 
-* Don't rely on order
-* Don't insert while iterating
-* Can't have mutable keys
-
-| The restrictions on dictionaries
-| can seem arbitrary if you don't know
-| how they work
-
-Take-away #1
-============
+| Hopefully “the rules”
+| now make a bit more sense
+| and seem less arbitrary
 
 * Don't rely on order
 * Don't insert while iterating
 * Can't have mutable keys
-
-| Hopefully you now have a picture
-| in your head that makes the
-| restrictions make sense!
 
 Take-away #2
 ============
@@ -865,13 +844,13 @@ Take-away #3
 | method you now know how hashes
 | should behave
 
-1. Scatter bits like crazy
-2. Equal instances **must** have equal hashes
-3. Must also implement ``__eq__()`` method
-4. Make hash and equality quick!
+* Scatter bits like crazy
+* Equal instances **must** have equal hashes
+* Must also implement ``__eq__()`` method
+* Make hash and equality quick!
 
-| (You can often get away with ``^``
-| all of the values inside the instance)
+| (You can often get away with ``^`` xor'ing
+| the hashes of your instance variables)
 
 Hashing your own classes
 ========================
