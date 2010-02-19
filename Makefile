@@ -2,7 +2,7 @@
 #presentation.pdf: presentation.html
 #	wkhtmltopdf presentation.html presentation.pdf
 
-PYTHON := PYTHONPATH=/home/brandon/dictvis /usr/bin/python
+PYTHON := /usr/bin/python
 SVGS := $(wildcard figures/*.svg)
 PNGS := $(addsuffix .png, $(basename $(SVGS)))
 
@@ -21,7 +21,7 @@ $(PNGs): %.png: %.svg
 # Both figures and data files are built by corresponding Python scripts
 # of the same name.
 
-FIGURE_SCRIPTS := $(filter-out figures/_dictdraw.py, $(wildcard figures/*.py))
+FIGURE_SCRIPTS := $(filter-out figures/_%, $(wildcard figures/*.py))
 FIGURES := $(addsuffix .png, $(basename $(FIGURE_SCRIPTS)))
 
 all_figures: $(FIGURES)
@@ -29,7 +29,7 @@ $(FIGURES): %.png: %.py
 	$(PYTHON) $*.py $*.png
 
 $(filter figures/insert% figures/collide% figures/words%, $(FIGURES)): \
-  figures/_dictdraw.py
+  figures/_dictdraw.py figures/_dictinfo.py
 
 DATA_SCRIPTS := $(wildcard data/*.py)
 DATA_FILES := $(addsuffix .txt, $(basename $(DATA_SCRIPTS)))

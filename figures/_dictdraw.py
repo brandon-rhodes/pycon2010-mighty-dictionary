@@ -3,7 +3,7 @@
 
 from math import ceil, pi
 import cairo, sys
-import my_inspect
+import _dictinfo
 
 cr = None
 
@@ -112,7 +112,7 @@ def draw_dictionary(d, *lookup_paths):
     """Supply `d` a Python dictionary."""
     global cr
 
-    o = my_inspect.dictobject(d)
+    o = _dictinfo.dictobject(d)
 
     WIDTH=960
     if len(o) == 8:
@@ -199,7 +199,7 @@ def draw_dictionary(d, *lookup_paths):
                         draw_textbox([white, u' ' * 6], lightgray)
                     continue
 
-                if k is my_inspect.dummy:
+                if k is _dictinfo.dummy:
                     draw_textbox([white, u'!'], red)
                     cr.rel_move_to(gap, 0)
                     draw_textbox([white, u' ' * hashwidth], gray)

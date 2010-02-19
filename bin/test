@@ -2,6 +2,6 @@
 
 import doctest, os, sys
 
-sys.path.append('/home/brandon/dictvis')
+sys.path.append('figures')  # where _dictinfo module lives
 doctest.testfile('../presentation.rst', encoding='utf-8',
                  optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE)

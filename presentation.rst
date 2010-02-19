@@ -1,6 +1,6 @@
 .. include:: <s5defs.txt>
 
->>> import my_inspect
+>>> import _dictinfo
 >>> from timeit import timeit
 >>> def bits(n):
 ...    n += 2**32
@@ -754,7 +754,7 @@ A dictionary of common words:
 
 We can examine which keys collide:
 
->>> pmap = my_inspect.probe_all_steps(words)
+>>> pmap = _dictinfo.probe_all_steps(words)
 
 untitled
 ========
