@@ -884,14 +884,19 @@ Take-away #4
 The End
 =======
 
+.. image:: figures/insert5b.png
+
+| *May your hashes be unique,*
+| *Your hash tables never full,*
+| *And may your keys rarely collide*
+
 Other material
 ==============
 
-How much time does malloc take?  Both on going bigger and smaller!
+These did not make it into the talk:
 
-- emphasize that hashes compared before objects
-- make steps of dictionary lookup clearer at beginning (HASH then COMPARE)
-- talk about how setdefault() does only one lookup
+* How much time does malloc take overall?
+* Talk about how setdefault() does only one lookup
 
 .. raw:: html
 
