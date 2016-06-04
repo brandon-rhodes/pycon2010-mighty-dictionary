@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 from math import ceil, pi
 import cairo, sys
@@ -251,7 +251,7 @@ def draw_dictionary(d, *lookup_paths):
             for i in range(1, len(lookup_path)):
                 from_slot = lookup_path[i - 1]
                 dest_slot = lookup_path[i]
-                
+
                 yf = 2 + from_slot * (height + gap + 0.5) + height / 2
                 yd = 2 + dest_slot * (height + gap + 0.5) + height / 2
                 y0 = min(yf, yd)
@@ -274,6 +274,8 @@ def draw_dictionary(d, *lookup_paths):
 #
 
 if __name__ == '__main__':
+    if sys.maxsize != 2147483647:
+        raise ValueError('this script only works on a 32-bit system')
     d = {'ftp': 21}
     surface = draw_dictionary(d)
     surface.write_to_png(sys.argv[1])
